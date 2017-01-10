@@ -20,7 +20,7 @@ namespace TicTacToe3D.Pages
         {
             Application.Current.MainWindow.KeyDown += GamePage_OnKeyDown;
 
-            _game = new Game.Game(3, GameCanvas);
+            _game = new Game.Game(5, GameCanvas);
             _game.Start();
         }
 
