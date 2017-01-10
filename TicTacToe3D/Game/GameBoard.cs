@@ -11,7 +11,7 @@ using Color = System.Windows.Media.Color;
 
 namespace TicTacToe3D.Game
 {
-    class GameBoard
+    internal class GameBoard
     {
         #region BRUSHES
         private readonly SolidColorBrush[] _normalBrushes = {
@@ -70,12 +70,18 @@ namespace TicTacToe3D.Game
         {
             _transform3DTool.SetCanvasSize(_canvas.ActualWidth, _canvas.ActualHeight);
             CubesListSortZDesc();
-            var innerCanvas = new Canvas();
+            var innerCanvas = new Canvas { CacheMode = new BitmapCache(2) };
+            _canvas.Children.Clear();
+
+            //var watch = System.Diagnostics.Stopwatch.StartNew();
             foreach (var gfield in _gameFieldsList)
             {
                 DrawGameField(gfield, innerCanvas);
             }
-            _canvas.Children.Clear();
+            //watch.Stop();
+            //var elapsedMs = watch.ElapsedTicks;
+            //Console.WriteLine("DRAW TICKS: " + elapsedMs);
+
             _canvas.Children.Add(innerCanvas);
         }
 
@@ -163,9 +169,9 @@ namespace TicTacToe3D.Game
             var z = x;
 
             var nr = 0;
-            for (int i = 0; i < _size; i++)
-                for (int j = 0; j < _size; j++)
-                    for (int k = 0; k < _size; k++)
+            for (var i = 0; i < _size; i++)
+                for (var j = 0; j < _size; j++)
+                    for (var k = 0; k < _size; k++)
                     {
                         var gf = new GameField(
                             new[] { x + i + i * margin, y + j + j * margin, z + k + k * margin }, i, nr++);
@@ -177,7 +183,7 @@ namespace TicTacToe3D.Game
         private void DrawGameField(GameField gameField, Canvas canvas)
         {
             var cubeFaces = gameField.Cube.CubeFaces();
-            for (int i = 0; i < cubeFaces.Count; ++i)
+            for (var i = 0; i < cubeFaces.Count; ++i)
             {
                 var points = Transform3DTool.Instance().TransformPointsTo2D(cubeFaces[i]);
                 var p = new Polygon
@@ -193,7 +199,7 @@ namespace TicTacToe3D.Game
                     p.Stroke = Brushes.White;
                     p.StrokeThickness = 2;
                 }
-                if (i == 3 && gameField.Marked)
+                if ((i == 3) && gameField.Marked)
                 {
                     var e = CubesSphere(gameField.Cube, gameField.PlayerColor);
                     canvas.Children.Add(e);
@@ -231,7 +237,7 @@ namespace TicTacToe3D.Game
             var layerItems = _size * _size;
             var layerStart = _highlightedLayer * layerItems;
             var newField = HighlightedField - 1;
-            if (newField >= layerStart && HighlightedField % _size > 0)
+            if ((newField >= layerStart) && (HighlightedField % _size > 0))
             {
                 HighlightedField = newField;
                 DrawGameBoard();
@@ -244,7 +250,7 @@ namespace TicTacToe3D.Game
             var layerStart = _highlightedLayer * layerItems;
             var layerStop = layerStart + layerItems;
             var newField = HighlightedField + 1;
-            if (newField < layerStop && newField % _size > 0)
+            if ((newField < layerStop) && (newField % _size > 0))
             {
                 HighlightedField = newField;
                 DrawGameBoard();
@@ -279,17 +285,11 @@ namespace TicTacToe3D.Game
         private void FreezeBrushes()
         {
             foreach (var solidColorBrush in _normalBrushes)
-            {
                 solidColorBrush.Freeze();
-            }
             foreach (var solidColorBrush in _highlightBrushes)
-            {
                 solidColorBrush.Freeze();
-            }
             foreach (var solidColorBrush in _strokeBrushes)
-            {
                 solidColorBrush.Freeze();
-            }
         }
 
         public bool MarkHighlighted(SolidColorBrush playerColor)
@@ -304,9 +304,7 @@ namespace TicTacToe3D.Game
         public void Clear()
         {
             foreach (var gameField in _gameFields)
-            {
                 gameField.Clear();
-            }
             HighlightedField = 0;
             DrawGameBoard();
         }

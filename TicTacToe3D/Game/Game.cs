@@ -60,8 +60,8 @@ namespace TicTacToe3D.Game
         private bool CheckWin(List<int> playerMarkedFields)
         {
             var last = playerMarkedFields[playerMarkedFields.Count - 1];
-            var lastLayer = last / (_size * _size);
             var layerFields = _size * _size;
+            var lastLayer = last / layerFields;
             foreach (var playerMarkedField in playerMarkedFields)
             {
                 Console.Write(playerMarkedField + " ");
@@ -114,7 +114,7 @@ namespace TicTacToe3D.Game
             }
             if (result == _size) return true;
 
-            // row between layer
+            // row between layers
             result = 0;
             for (int i = 0; i < _size; i++)
             {
@@ -125,6 +125,93 @@ namespace TicTacToe3D.Game
             }
             if (result == _size) return true;
 
+            // antidiag between layers up
+            result = 0;
+            for (int i = 0; i < _size; i++)
+            {
+                var f = last % (layerFields + _size) + i * (layerFields + _size);
+                Console.WriteLine("antidiag between up " + f);
+                if (playerMarkedFields.Contains(f)) result++;
+                else break;
+            }
+            if (result == _size) return true;
+
+            // diag betwwen layers up
+            result = 0;
+            for (int i = 0; i < _size; i++)
+            {
+                var f = last % (layerFields - _size) + (i + 1) * (layerFields - _size);
+                Console.WriteLine("diag between up " + f);
+                if (playerMarkedFields.Contains(f)) result++;
+                else break;
+            }
+            if (result == _size) return true;
+
+            // antidiag between layers flat
+            result = 0;
+            for (int i = 0; i < _size; i++)
+            {
+                var f = last % (layerFields + 1) + i * (layerFields + 1);
+                Console.WriteLine("antidiag between flat " + f);
+                if (playerMarkedFields.Contains(f)) result++;
+                else break;
+            }
+            if (result == _size) return true;
+
+            // diag between layers flat
+            result = 0;
+            for (int i = 0; i < _size; i++)
+            {
+                var f = last % (layerFields - 1) + i * (layerFields - 1);
+                Console.WriteLine("diag between flat " + f);
+                if (playerMarkedFields.Contains(f)) result++;
+                else break;
+            }
+            if (result == _size) return true;
+
+            // cross down 1
+            result = 0;
+            for (int i = 0; i < _size; i++)
+            {
+                var f = i * (layerFields + _size + 1);
+                Console.WriteLine("cross down1 " + f);
+                if (playerMarkedFields.Contains(f)) result++;
+                else break;
+            }
+            if (result == _size) return true;
+
+            // cross down 2
+            result = 0;
+            for (int i = 0; i < _size; i++)
+            {
+                var f = _size - 1 + i * (layerFields + _size - 1);
+                Console.WriteLine("cross down2 " + f);
+                if (playerMarkedFields.Contains(f)) result++;
+                else break;
+            }
+            if (result == _size) return true;
+
+            // cross up 1
+            result = 0;
+            for (int i = 0; i < _size; i++)
+            {
+                var f = layerFields - _size + 1 + i * (layerFields - _size + 1);
+                Console.WriteLine("cross up1 " + f);
+                if (playerMarkedFields.Contains(f)) result++;
+                else break;
+            }
+            if (result == _size) return true;
+
+            // cross up 2
+            result = 0;
+            for (int i = 0; i < _size; i++)
+            {
+                var f = layerFields - 1 + i * (layerFields - _size - 1);
+                Console.WriteLine("cross up2 " + f);
+                if (playerMarkedFields.Contains(f)) result++;
+                else break;
+            }
+            if (result == _size) return true;
 
 
             if (_moves >= _fields)
