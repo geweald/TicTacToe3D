@@ -15,23 +15,23 @@ namespace TicTacToe3D.Game
     {
         #region BRUSHES
         private readonly SolidColorBrush[] _normalBrushes = {
-                new SolidColorBrush(Color.FromArgb(33, 255, 0, 0)),
-                new SolidColorBrush(Color.FromArgb(33, 0, 255, 0)),
-                new SolidColorBrush(Color.FromArgb(33, 0, 0, 255)),
-                new SolidColorBrush(Color.FromArgb(33, 255, 0, 255)),
-                new SolidColorBrush(Color.FromArgb(33, 0, 255, 255))
+                new SolidColorBrush(Color.FromArgb(20, 255, 0, 0)),
+                new SolidColorBrush(Color.FromArgb(20, 0, 255, 0)),
+                new SolidColorBrush(Color.FromArgb(20, 255, 255, 0)),
+                new SolidColorBrush(Color.FromArgb(20, 255, 0, 255)),
+                new SolidColorBrush(Color.FromArgb(20, 0, 255, 255))
             };
         private readonly SolidColorBrush[] _highlightBrushes = {
                 new SolidColorBrush(Color.FromArgb(55, 255, 0, 0)),
                 new SolidColorBrush(Color.FromArgb(55, 0, 255, 0)),
-                new SolidColorBrush(Color.FromArgb(55, 0, 0, 255)),
+                new SolidColorBrush(Color.FromArgb(55, 255, 255, 0)),
                 new SolidColorBrush(Color.FromArgb(55, 255, 0, 255)),
                 new SolidColorBrush(Color.FromArgb(55, 0, 255, 255))
             };
         private readonly SolidColorBrush[] _strokeBrushes = {
                 new SolidColorBrush(Color.FromArgb(255, 255, 0, 0)),
                 new SolidColorBrush(Color.FromArgb(255, 0, 255, 0)),
-                new SolidColorBrush(Color.FromArgb(255, 0, 0, 255)),
+                new SolidColorBrush(Color.FromArgb(255, 255, 255, 0)),
                 new SolidColorBrush(Color.FromArgb(255, 255, 0, 255)),
                 new SolidColorBrush(Color.FromArgb(255, 0, 255, 255))
             };
@@ -292,9 +292,9 @@ namespace TicTacToe3D.Game
                 solidColorBrush.Freeze();
         }
 
-        public bool MarkHighlighted(SolidColorBrush playerColor)
+        public bool MarkField(int field, SolidColorBrush playerColor)
         {
-            var highlightedGameField = _gameFieldsList.SingleOrDefault(gf => gf.FieldNr == HighlightedField);
+            var highlightedGameField = _gameFieldsList.SingleOrDefault(gf => gf.FieldNr == field);
             if (highlightedGameField == null) return false;
             var result = highlightedGameField.Mark(playerColor);
             if (result) DrawGameBoard();
@@ -305,6 +305,7 @@ namespace TicTacToe3D.Game
         {
             foreach (var gameField in _gameFields)
                 gameField.Clear();
+            _highlightedLayer = 0;
             HighlightedField = 0;
             DrawGameBoard();
         }

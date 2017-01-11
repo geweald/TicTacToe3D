@@ -19,10 +19,16 @@ namespace TicTacToe3D.Pages
         private void GamePage_OnLoaded(object sender, RoutedEventArgs e)
         {
             Application.Current.MainWindow.KeyDown += GamePage_OnKeyDown;
+            Application.Current.MainWindow.SizeChanged += MainWindowOnSizeChanged;
 
-            _game = new Game.Game(3, GameCanvas);
+            _game = new Game.Game(5, GameCanvas);
             _game.GameBoard.Zoom(-7);
             _game.Start();
+        }
+
+        private void MainWindowOnSizeChanged(object sender, SizeChangedEventArgs sizeChangedEventArgs)
+        {
+            _game.GameBoard.DrawGameBoard();
         }
 
         private void GamePage_OnKeyDown(object sender, KeyEventArgs e)
@@ -80,6 +86,13 @@ namespace TicTacToe3D.Pages
         private void GamePage_OnUnloaded(object sender, RoutedEventArgs e)
         {
             Application.Current.MainWindow.KeyDown -= GamePage_OnKeyDown;
+            Application.Current.MainWindow.SizeChanged -= MainWindowOnSizeChanged;
+        }
+
+        private void StartButton_OnClick(object sender, RoutedEventArgs e)
+        {
+            _game.PlayWithComputer(ComputerCheckBox.IsChecked);
+            _game.Restart();
         }
     }
 }

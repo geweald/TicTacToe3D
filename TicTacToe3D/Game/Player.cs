@@ -7,6 +7,8 @@ namespace TicTacToe3D.Game
     {
         public string Name { get; private set; }
         public SolidColorBrush Color { get; private set; }
+        public bool IsComputer { get; set; }
+
         public List<int> MarkedFields;
 
         public Player(string name, SolidColorBrush color)
@@ -15,17 +17,6 @@ namespace TicTacToe3D.Game
             Color = color;
             color.Freeze();
             MarkedFields = new List<int>();
-        }
-
-
-        public void MarkedField(int field)
-        {
-            MarkedFields.Add(field);
-        }
-
-        public void ClearFields()
-        {
-            MarkedFields.Clear();
         }
     }
 }

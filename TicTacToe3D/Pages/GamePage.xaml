@@ -10,13 +10,13 @@
       Unloaded="GamePage_OnUnloaded"
       Title="GamePage">
 
-    <Grid>
+    <Grid Background="Black">
         <Grid.RowDefinitions>
-            <RowDefinition Height="*"></RowDefinition>
+            <RowDefinition Height="*" MinHeight="300"></RowDefinition>
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="4*"></ColumnDefinition>
-            <ColumnDefinition Width="1*"></ColumnDefinition>
+            <ColumnDefinition Width="*" MinWidth="300"></ColumnDefinition>
+            <ColumnDefinition Width="*" MinWidth="180" MaxWidth="180"></ColumnDefinition>
         </Grid.ColumnDefinitions>
 
         <Canvas 
@@ -32,14 +32,32 @@
 
 
         <StackPanel
-            Background="Red"
+            Margin="15"
             Grid.Column="1"
             Orientation="Vertical">
             <TextBlock
-                Text="Testowy tekst"/>
+                Text="Kółko i krzyżyk 3D" 
+                Margin="10"
+                TextAlignment="Center"
+                FontSize="21"
+                TextWrapping="Wrap"
+                Foreground="White"/>
+            <CheckBox
+                Focusable="False"
+                Name="ComputerCheckBox"
+                IsChecked="True"
+                Content="Gra z komputerem" 
+                Margin="10"
+                Background="White" 
+                Foreground="White"/>
             <Button
                 Background="GreenYellow"
-                Content="Testowy guzik"/>
+                Margin="10"
+                Padding="5"
+                Content="START" 
+                Focusable="False"
+                FontWeight="Bold"
+                Click="StartButton_OnClick"/>
         </StackPanel>
     </Grid>
 </Page>
