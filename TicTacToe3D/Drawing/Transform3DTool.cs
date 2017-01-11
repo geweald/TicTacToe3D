@@ -118,7 +118,7 @@ namespace TicTacToe3D.Drawing
 
         public void Zoom(double zoom)
         {
-            if (_zoom - zoom > 0)
+            if (_zoom - zoom > 0 && _zoom - zoom < 100)
                 _zoom -= zoom;
         }
     }

@@ -35,6 +35,9 @@ namespace TicTacToe3D.Game
                 new SolidColorBrush(Color.FromArgb(255, 255, 0, 255)),
                 new SolidColorBrush(Color.FromArgb(255, 0, 255, 255))
             };
+
+        private readonly SolidColorBrush _highlightStroke =
+            Brushes.White;
         #endregion
 
         private readonly GameField[,,] _gameFields;
@@ -189,6 +192,7 @@ namespace TicTacToe3D.Game
                 var p = new Polygon
                 {
                     Stroke = _strokeBrushes[gameField.Layer],
+                    StrokeMiterLimit = 1,
                     Points = new PointCollection(points),
                     Fill = gameField.Layer == _highlightedLayer
                         ? _highlightBrushes[gameField.Layer]
@@ -196,7 +200,7 @@ namespace TicTacToe3D.Game
                 };
                 if (gameField.FieldNr == HighlightedField)
                 {
-                    p.Stroke = Brushes.White;
+                    p.Stroke = _highlightStroke;
                     p.StrokeThickness = 2;
                 }
                 if ((i == 3) && gameField.Marked)
@@ -215,6 +219,20 @@ namespace TicTacToe3D.Game
             var elc = _transform3DTool.TransformPointTo2D(center);
             var els = _transform3DTool.TransformPointTo2D(centerAndD);
             var d = Math.Sqrt(Math.Pow(elc.X - els.X, 2) + Math.Pow(elc.Y - els.Y, 2)) * 0.8;
+            //            var fill = new RadialGradientBrush
+            //            {
+            //                GradientOrigin = new Point(0.7, 0.3),
+            //                GradientStops = new GradientStopCollection
+            //                {
+            //                    new GradientStop(Colors.White, 0),
+            //                    new GradientStop(
+            //                        color.Color == Colors.White
+            //                        ? Colors.Gray
+            //                        : color.Color,
+            //                        1)
+            //                }
+            //            };
+            //            fill.Freeze();
             var e = new Ellipse
             {
                 Width = d,
@@ -290,6 +308,7 @@ namespace TicTacToe3D.Game
                 solidColorBrush.Freeze();
             foreach (var solidColorBrush in _strokeBrushes)
                 solidColorBrush.Freeze();
+            _highlightStroke.Freeze();
         }
 
         public bool MarkField(int field, SolidColorBrush playerColor)

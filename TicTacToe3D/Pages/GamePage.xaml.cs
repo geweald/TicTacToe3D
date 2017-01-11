@@ -10,6 +10,7 @@ namespace TicTacToe3D.Pages
     public partial class GamePage : Page
     {
         private Game.Game _game;
+        private Point _mousePos;
 
         public GamePage()
         {
@@ -93,6 +94,57 @@ namespace TicTacToe3D.Pages
         {
             _game.PlayWithComputer(ComputerCheckBox.IsChecked);
             _game.Restart();
+        }
+
+        private void RotationZLeftButton_OnClick(object sender, RoutedEventArgs e)
+        {
+            _game.GameBoard.RotateZ(2);
+        }
+
+        private void RotationZRightButton_OnClick(object sender, RoutedEventArgs e)
+        {
+            _game.GameBoard.RotateZ(-2);
+        }
+
+        private void RotationXTopButton_OnClick(object sender, RoutedEventArgs e)
+        {
+            _game.GameBoard.RotateX(2);
+        }
+
+        private void RotationYLeftButton_OnClick(object sender, RoutedEventArgs e)
+        {
+            _game.GameBoard.RotateY(-2);
+        }
+
+        private void RotationXDownButton_OnClick(object sender, RoutedEventArgs e)
+        {
+            _game.GameBoard.RotateX(-2);
+        }
+
+        private void RotationYRightRightButton_OnClick(object sender, RoutedEventArgs e)
+        {
+            _game.GameBoard.RotateY(2);
+        }
+
+        private void GameCanvas_OnMouseMove(object sender, MouseEventArgs e)
+        {
+            if (e.LeftButton != MouseButtonState.Pressed) return;
+
+            var point = e.GetPosition(GameCanvas);
+            _game.GameBoard.RotateY((point.X - _mousePos.X) / 8);
+            _game.GameBoard.RotateX((point.Y - _mousePos.Y) / -8);
+
+            _mousePos = point;
+        }
+
+        private void GameCanvas_OnMouseDown(object sender, MouseButtonEventArgs e)
+        {
+            _mousePos = e.GetPosition(GameCanvas);
+        }
+
+        private void GameCanvas_OnMouseWheel(object sender, MouseWheelEventArgs e)
+        {
+            _game.GameBoard.Zoom(e.Delta / 100.0);
         }
     }
 }

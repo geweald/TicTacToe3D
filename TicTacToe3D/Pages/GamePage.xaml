@@ -22,12 +22,22 @@
         <Canvas 
             Name="GameCanvas"
             ClipToBounds="True"
+            MouseMove="GameCanvas_OnMouseMove"
+            MouseDown="GameCanvas_OnMouseDown"
+            MouseWheel="GameCanvas_OnMouseWheel"
             VerticalAlignment="Stretch"
             HorizontalAlignment="Stretch"
             Background="Black"
             Grid.Column="0">
+            <Ellipse Width="100" Height="100">
+                <Ellipse.Fill>
+                    <RadialGradientBrush GradientOrigin=".7,.3" RadiusX="0.6">
+                        <GradientStop Color="#fff" Offset="1" />
+                        <GradientStop Color="#00eeff" Offset="0" />
+                    </RadialGradientBrush>
+                </Ellipse.Fill>
+            </Ellipse>
             
-<!--            <Polygon Fill="Red" Points="10,10 100,100 100,10 10,100"></Polygon>-->
         </Canvas>
 
 
@@ -58,6 +68,40 @@
                 Focusable="False"
                 FontWeight="Bold"
                 Click="StartButton_OnClick"/>
+            
+            <StackPanel
+                HorizontalAlignment="Center"
+                Orientation="Horizontal">
+                <Button
+                    Name="RotationZLeftButton"
+                    Click="RotationZLeftButton_OnClick"
+                    Content="Z Left"/>
+                <Button
+                    Name="RotationXTopButton"
+                    Click="RotationXTopButton_OnClick"
+                    Content="X Top"/>
+                <Button
+                    Name="RotationZRightButton"
+                    Click="RotationZRightButton_OnClick"
+                    Content="Z Right"/>
+            </StackPanel>
+            <StackPanel
+                HorizontalAlignment="Center"
+                Orientation="Horizontal">
+                <Button
+                    Name="RotationYLeftButton"
+                    MouseDown="RotationYLeftButton_OnClick"
+                    Click="RotationYLeftButton_OnClick"
+                    Content="Y Left"/>
+                <Button
+                    Name="RotationXDownButton"
+                    Click="RotationXDownButton_OnClick"
+                    Content="X Top"/>
+                <Button
+                    Name="RotationYRightRightButton"
+                    Click="RotationYRightRightButton_OnClick"
+                    Content="Y Right"/>
+            </StackPanel>
         </StackPanel>
     </Grid>
 </Page>
