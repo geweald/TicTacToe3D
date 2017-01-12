@@ -26,6 +26,7 @@ namespace TicTacToe3D.Game
             _moves = 0;
             _size = size;
             _fields = size * size * size;
+
             GameBoard = new GameBoard(size, canvas);
         }
 

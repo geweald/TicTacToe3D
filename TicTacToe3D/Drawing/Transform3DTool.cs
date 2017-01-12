@@ -19,7 +19,7 @@ namespace TicTacToe3D.Drawing
         private Transform3DTool()
         {
             D = 5.0;
-            _zoom = 5.0;
+            _zoom = D;
             _projection.OffsetZ = D;
         }
 
@@ -101,6 +101,15 @@ namespace TicTacToe3D.Drawing
             _transform = rot;
         }
 
+        public void RotateXY(double x, double y)
+        {
+            RotateX(x);
+            var transform = _transform;
+            RotateY(y);
+            _transform = Matrix3D.Multiply(_transform, transform);
+        }
+
+
         public void RotateZ(double a)
         {
             var rad = a * Math.PI / 180.0;
@@ -120,6 +129,11 @@ namespace TicTacToe3D.Drawing
         {
             if (_zoom - zoom > 0 && _zoom - zoom < 100)
                 _zoom -= zoom;
+        }
+
+        public void SetZoom(double zoom)
+        {
+            _zoom = zoom;
         }
     }
 }

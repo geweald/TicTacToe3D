@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Controls;
+using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Media3D;
 using System.Windows.Shapes;
@@ -29,11 +30,11 @@ namespace TicTacToe3D.Game
                 new SolidColorBrush(Color.FromArgb(55, 0, 255, 255))
             };
         private readonly SolidColorBrush[] _strokeBrushes = {
-                new SolidColorBrush(Color.FromArgb(255, 255, 0, 0)),
-                new SolidColorBrush(Color.FromArgb(255, 0, 255, 0)),
-                new SolidColorBrush(Color.FromArgb(255, 255, 255, 0)),
-                new SolidColorBrush(Color.FromArgb(255, 255, 0, 255)),
-                new SolidColorBrush(Color.FromArgb(255, 0, 255, 255))
+                new SolidColorBrush(Color.FromArgb(95, 255, 0, 0)),
+                new SolidColorBrush(Color.FromArgb(95, 0, 255, 0)),
+                new SolidColorBrush(Color.FromArgb(95, 255, 255, 0)),
+                new SolidColorBrush(Color.FromArgb(95, 255, 0, 255)),
+                new SolidColorBrush(Color.FromArgb(95, 0, 255, 255))
             };
 
         private readonly SolidColorBrush _highlightStroke =
@@ -54,7 +55,7 @@ namespace TicTacToe3D.Game
         {
             FreezeBrushes();
 
-            _size = size > 5 ? 5 : size;
+            _size = size;
             _transform3DTool = Transform3DTool.Instance();
             _canvas = canvas;
             _highlightedLayer = 0;
@@ -62,6 +63,7 @@ namespace TicTacToe3D.Game
 
             _gameFields = new GameField[_size, _size, _size];
             MakeCubes();
+            SetZoom();
 
             RotateZ(90);
             RotateY(-90);
@@ -73,18 +75,17 @@ namespace TicTacToe3D.Game
         {
             _transform3DTool.SetCanvasSize(_canvas.ActualWidth, _canvas.ActualHeight);
             CubesListSortZDesc();
-            var innerCanvas = new Canvas { CacheMode = new BitmapCache(2) };
+            var innerCanvas = new Canvas { CacheMode = new BitmapCache() };
             _canvas.Children.Clear();
 
-            //var watch = System.Diagnostics.Stopwatch.StartNew();
+            var watch = System.Diagnostics.Stopwatch.StartNew();
             foreach (var gfield in _gameFieldsList)
             {
                 DrawGameField(gfield, innerCanvas);
             }
-            //watch.Stop();
-            //var elapsedMs = watch.ElapsedTicks;
-            //Console.WriteLine("DRAW TICKS: " + elapsedMs);
-
+            watch.Stop();
+            var elapsedMs = watch.ElapsedTicks;
+            Console.WriteLine("DRAW TICKS: " + elapsedMs);
             _canvas.Children.Add(innerCanvas);
         }
 
@@ -143,6 +144,14 @@ namespace TicTacToe3D.Game
             DrawGameBoard();
         }
 
+        public void RotateXY(double x, double y)
+        {
+            _transform3DTool.RotateXY(x, y);
+            TransformCubes();
+            DrawGameBoard();
+        }
+
+
         public void RotateZ(double a)
         {
             _transform3DTool.RotateZ(a);
@@ -194,21 +203,38 @@ namespace TicTacToe3D.Game
                     Stroke = _strokeBrushes[gameField.Layer],
                     StrokeMiterLimit = 1,
                     Points = new PointCollection(points),
-                    Fill = gameField.Layer == _highlightedLayer
-                        ? _highlightBrushes[gameField.Layer]
-                        : _normalBrushes[gameField.Layer],
+                    Fill = _normalBrushes[gameField.Layer],
+                    IsHitTestVisible = false
                 };
                 if (gameField.FieldNr == HighlightedField)
                 {
                     p.Stroke = _highlightStroke;
                     p.StrokeThickness = 2;
                 }
-                if ((i == 3) && gameField.Marked)
+                if (gameField.Layer == _highlightedLayer)
                 {
-                    var e = CubesSphere(gameField.Cube, gameField.PlayerColor);
-                    canvas.Children.Add(e);
+                    p.Fill = _highlightBrushes[gameField.Layer];
+                    p.IsHitTestVisible = true;
+                    p.MouseEnter += (sender, args) =>
+                    {
+                        if (HighlightedField == gameField.FieldNr
+                        || args.RightButton == MouseButtonState.Pressed)
+                            return;
+                        HighlightedField = gameField.FieldNr;
+                        DrawGameBoard();
+                    };
+                    p.MouseDown += (sender, args) =>
+                    {
+                        if (args.LeftButton == MouseButtonState.Pressed)
+                            Console.WriteLine("OK! pole nr " + gameField.FieldNr);
+                    };
                 }
                 canvas.Children.Add(p);
+            }
+            if (gameField.Marked)
+            {
+                var e = CubesSphere(gameField.Cube, gameField.PlayerColor);
+                canvas.Children.Insert(canvas.Children.Count - 3, e);
             }
         }
 
@@ -239,7 +265,6 @@ namespace TicTacToe3D.Game
                 Height = d,
                 Fill = color
             };
-
             Canvas.SetTop(e, elc.Y - d / 2);
             Canvas.SetLeft(e, elc.X - d / 2);
             return e;
@@ -327,6 +352,11 @@ namespace TicTacToe3D.Game
             _highlightedLayer = 0;
             HighlightedField = 0;
             DrawGameBoard();
+        }
+
+        private void SetZoom()
+        {
+            _transform3DTool.SetZoom(3 * _size);
         }
     }
 }

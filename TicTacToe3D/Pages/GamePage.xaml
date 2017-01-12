@@ -10,99 +10,56 @@
       Unloaded="GamePage_OnUnloaded"
       Title="GamePage">
 
-    <Grid Background="Black">
-        <Grid.RowDefinitions>
-            <RowDefinition Height="*" MinHeight="300"></RowDefinition>
-        </Grid.RowDefinitions>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="*" MinWidth="300"></ColumnDefinition>
-            <ColumnDefinition Width="*" MinWidth="180" MaxWidth="180"></ColumnDefinition>
-        </Grid.ColumnDefinitions>
-
+    <Grid>
+        <Grid.Background>
+            <ImageBrush ImageSource="/TicTacToe3D;component/Assets/bg.jpg" Stretch="UniformToFill"/>
+        </Grid.Background>
         <Canvas 
             Name="GameCanvas"
             ClipToBounds="True"
             MouseMove="GameCanvas_OnMouseMove"
-            MouseDown="GameCanvas_OnMouseDown"
             MouseWheel="GameCanvas_OnMouseWheel"
+            MouseEnter="GameCanvas_OnMouseEnter"
             VerticalAlignment="Stretch"
             HorizontalAlignment="Stretch"
-            Background="Black"
-            Grid.Column="0">
-            <Ellipse Width="100" Height="100">
-                <Ellipse.Fill>
-                    <RadialGradientBrush GradientOrigin=".7,.3" RadiusX="0.6">
-                        <GradientStop Color="#fff" Offset="1" />
-                        <GradientStop Color="#00eeff" Offset="0" />
-                    </RadialGradientBrush>
-                </Ellipse.Fill>
-            </Ellipse>
-            
+            Background="Transparent">
         </Canvas>
-
-
+        
         <StackPanel
-            Margin="15"
-            Grid.Column="1"
-            Orientation="Vertical">
+            VerticalAlignment="Top"
+            HorizontalAlignment="Right"
+            Margin="20">
             <TextBlock
-                Text="Kółko i krzyżyk 3D" 
-                Margin="10"
-                TextAlignment="Center"
-                FontSize="21"
-                TextWrapping="Wrap"
-                Foreground="White"/>
-            <CheckBox
-                Focusable="False"
-                Name="ComputerCheckBox"
-                IsChecked="True"
-                Content="Gra z komputerem" 
-                Margin="10"
-                Background="White" 
-                Foreground="White"/>
-            <Button
-                Background="GreenYellow"
-                Margin="10"
-                Padding="5"
-                Content="START" 
-                Focusable="False"
-                FontWeight="Bold"
-                Click="StartButton_OnClick"/>
-            
+                Text="Move:"
+                Foreground="White"
+                TextAlignment="Right"
+                Padding="0,0,0,5"/>
             <StackPanel
-                HorizontalAlignment="Center"
                 Orientation="Horizontal">
-                <Button
-                    Name="RotationZLeftButton"
-                    Click="RotationZLeftButton_OnClick"
-                    Content="Z Left"/>
-                <Button
-                    Name="RotationXTopButton"
-                    Click="RotationXTopButton_OnClick"
-                    Content="X Top"/>
-                <Button
-                    Name="RotationZRightButton"
-                    Click="RotationZRightButton_OnClick"
-                    Content="Z Right"/>
-            </StackPanel>
-            <StackPanel
-                HorizontalAlignment="Center"
-                Orientation="Horizontal">
-                <Button
-                    Name="RotationYLeftButton"
-                    MouseDown="RotationYLeftButton_OnClick"
-                    Click="RotationYLeftButton_OnClick"
-                    Content="Y Left"/>
-                <Button
-                    Name="RotationXDownButton"
-                    Click="RotationXDownButton_OnClick"
-                    Content="X Top"/>
-                <Button
-                    Name="RotationYRightRightButton"
-                    Click="RotationYRightRightButton_OnClick"
-                    Content="Y Right"/>
+                <Rectangle
+                    Name="PlayerColorRectangle"
+                    Fill="Red"
+                    Stroke="White"
+                    Width="21"
+                    Height="21"/>
+                <TextBlock
+                    Name="PlayerName"
+                    Text="Player1"
+                    Foreground="White"
+                    VerticalAlignment="Center"
+                    FontSize="15"
+                    FontWeight="Bold"
+                    Margin="10,0,0,0"/>
             </StackPanel>
         </StackPanel>
-    </Grid>
+        
+        <Button
+            Name="BackToMenu"
+            VerticalAlignment="Top"
+            HorizontalAlignment="Left"
+            Content="BACK"
+            Click="BackToMenu_OnClick"
+            Margin="20"/>
+     </Grid>
 </Page>
 

@@ -9,7 +9,7 @@
         Loaded="MainWindow_OnLoaded"
         MinWidth="640"
         MinHeight="480"
-        Title="TicTacToe3D" Height="640" Width="960">
+        Title="Tic Tac Toe 3D" Height="640" Width="960">
     <Grid>
         <Frame 
             Name="MainFrame"  
