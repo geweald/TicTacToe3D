@@ -1,58 +1,68 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
+using TicTacToe3D.Pages;
 
 namespace TicTacToe3D.Game
 {
     class Game
     {
         private readonly List<Player> _players;
-        public GameBoard GameBoard { get; }
         private readonly int _fields;
         private readonly int _size;
         private int _moves;
-        private bool _over;
 
-        public Game(ushort size, Canvas canvas)
+        public bool GameOver { get; private set; }
+        public GameBoard GameBoard { get; }
+        private readonly GamePage.MakeMoveUpdateDelegate _moveUpdateDelegate;
+
+        public Game(ushort size, Canvas canvas, GamePage.MakeMoveUpdateDelegate moveUpdate)
         {
             _players = new List<Player>
             {
-                new Player("Janek", new SolidColorBrush(Color.FromArgb(255, 255, 255, 255))),
-                new Player("Marek", new SolidColorBrush(Color.FromArgb(255, 0, 0, 0))),
+                new Player("White Player", new SolidColorBrush(Color.FromArgb(255, 255, 255, 255))),
+                new Player("Black Player", new SolidColorBrush(Color.FromArgb(255, 0, 0, 0))),
             };
             _players[1].IsComputer = true;
             _moves = 0;
             _size = size;
             _fields = size * size * size;
 
-            GameBoard = new GameBoard(size, canvas);
+            GameBoard = new GameBoard(size, canvas, this);
+            _moveUpdateDelegate = moveUpdate;
         }
 
 
         public void Start()
         {
-            GameBoard.Clear();
-            _over = false;
+            GameOver = false;
+            GameBoard.DrawGameBoard();
         }
 
-        public void PlayWithComputer(bool? withComputer = true)
+        public void PlayWithComputer(bool withComputer = true)
         {
-            _players[1].IsComputer = withComputer == null || withComputer.Value;
+            _players[1].IsComputer = withComputer;
         }
-
 
         public void MakeMove()
         {
-            if (_over) return;
-            var player = _players[_moves % _players.Count];
-            if (!MakedMove(player, GameBoard.HighlightedField)) return;
-            var nextPlayer = _players[_moves % _players.Count];
-            if (nextPlayer.IsComputer) MakeRandomMove(nextPlayer);
+            if (GameOver) return;
+
+            var player = NextPlayer();
+            if (!MakeNextMove(player, GameBoard.HighlightedField))
+                return;
+
+            var nextPlayer = NextPlayer();
+            if (nextPlayer.IsComputer) RandomMove(nextPlayer);
         }
 
-        private bool MakedMove(Player player, int field)
+        public Player NextPlayer()
+        {
+            return _players[_moves % _players.Count];
+        }
+
+        private bool MakeNextMove(Player player, int field)
         {
             var success = GameBoard.MarkField(field, player.Color);
             if (!success) return false;
@@ -61,21 +71,31 @@ namespace TicTacToe3D.Game
 
             if (CheckWin(player.MarkedFields))
             {
-                _over = true;
-                MessageBox.Show("Wyrgywa gracz " + player.Name);
+                GameOver = true;
+
+                if (_moves >= _fields)
+                {
+                    //DrawAlert();
+                }
+                else
+                {
+                    //WinAlert(player);
+                }
             }
+
+            _moveUpdateDelegate();
             return true;
         }
 
-        private void MakeRandomMove(Player player)
+        private void RandomMove(Player player)
         {
-            if (_over) return;
+            if (GameOver) return;
             var fields = _size * _size * _size;
             var rnd = new Random();
             var field = rnd.Next(fields);
             for (int i = 0; i < fields; i++)
             {
-                if (!MakedMove(player, field)) field = (field + 1) % fields;
+                if (!MakeNextMove(player, field)) field = (field + 1) % fields;
                 else return;
             }
         }
@@ -85,18 +105,13 @@ namespace TicTacToe3D.Game
             var last = playerMarkedFields[playerMarkedFields.Count - 1];
             var layerFields = _size * _size;
             var lastLayer = last / layerFields;
-            foreach (var playerMarkedField in playerMarkedFields)
-            {
-                Console.Write(playerMarkedField + " ");
-            }
-            Console.WriteLine();
+
             // column in layer
             var result = 0;
             for (int i = 0; i < _size; i++)
             {
                 var f = last % _size + i * _size;
                 f += lastLayer * layerFields;
-                //Console.WriteLine("kol in layer " + f);
                 if (playerMarkedFields.Contains(f)) result++;
                 else break;
             }
@@ -108,7 +123,6 @@ namespace TicTacToe3D.Game
             {
                 var f = last / _size % _size * _size + i;
                 f += lastLayer * layerFields;
-                Console.WriteLine("row in layer " + f);
                 if (playerMarkedFields.Contains(f)) result++;
                 else break;
             }
@@ -120,7 +134,6 @@ namespace TicTacToe3D.Game
             {
                 var f = i * (_size + 1);
                 f += lastLayer * layerFields;
-                //Console.WriteLine("diag in layer " + f);
                 if (playerMarkedFields.Contains(f)) result++;
                 else break;
             }
@@ -132,7 +145,6 @@ namespace TicTacToe3D.Game
             {
                 var f = _size - 1 + i * (_size - 1);
                 f += lastLayer * layerFields;
-                //Console.WriteLine("antidiag in layer " + f);
                 if (playerMarkedFields.Contains(f)) result++;
                 else break;
             }
@@ -143,7 +155,6 @@ namespace TicTacToe3D.Game
             for (int i = 0; i < _size; i++)
             {
                 var f = last % layerFields + i * layerFields;
-                //Console.WriteLine("row between " + f);
                 if (playerMarkedFields.Contains(f)) result++;
                 else break;
             }
@@ -154,7 +165,6 @@ namespace TicTacToe3D.Game
             for (int i = 0; i < _size; i++)
             {
                 var f = last % (layerFields + _size) + i * (layerFields + _size);
-                //Console.WriteLine("antidiag between up " + f);
                 if (playerMarkedFields.Contains(f)) result++;
                 else break;
             }
@@ -165,7 +175,6 @@ namespace TicTacToe3D.Game
             for (int i = 0; i < _size; i++)
             {
                 var f = last % (layerFields - _size) + (i + 1) * (layerFields - _size);
-                //Console.WriteLine("diag between up " + f);
                 if (playerMarkedFields.Contains(f)) result++;
                 else break;
             }
@@ -176,7 +185,6 @@ namespace TicTacToe3D.Game
             for (int i = 0; i < _size; i++)
             {
                 var f = last % (layerFields + 1) + i * (layerFields + 1);
-                //Console.WriteLine("antidiag between flat " + f);
                 if (playerMarkedFields.Contains(f)) result++;
                 else break;
             }
@@ -187,7 +195,6 @@ namespace TicTacToe3D.Game
             for (int i = 0; i < _size; i++)
             {
                 var f = last % (layerFields - 1) + i * (layerFields - 1);
-                //Console.WriteLine("diag between flat " + f);
                 if (playerMarkedFields.Contains(f)) result++;
                 else break;
             }
@@ -198,7 +205,6 @@ namespace TicTacToe3D.Game
             for (int i = 0; i < _size; i++)
             {
                 var f = i * (layerFields + _size + 1);
-                //Console.WriteLine("cross down1 " + f);
                 if (playerMarkedFields.Contains(f)) result++;
                 else break;
             }
@@ -209,7 +215,6 @@ namespace TicTacToe3D.Game
             for (int i = 0; i < _size; i++)
             {
                 var f = _size - 1 + i * (layerFields + _size - 1);
-                //Console.WriteLine("cross down2 " + f);
                 if (playerMarkedFields.Contains(f)) result++;
                 else break;
             }
@@ -220,7 +225,6 @@ namespace TicTacToe3D.Game
             for (int i = 0; i < _size; i++)
             {
                 var f = layerFields - _size + 1 + i * (layerFields - _size + 1);
-                //Console.WriteLine("cross up1 " + f);
                 if (playerMarkedFields.Contains(f)) result++;
                 else break;
             }
@@ -231,7 +235,6 @@ namespace TicTacToe3D.Game
             for (int i = 0; i < _size; i++)
             {
                 var f = layerFields - 1 + i * (layerFields - _size - 1);
-                //Console.WriteLine("cross up2 " + f);
                 if (playerMarkedFields.Contains(f)) result++;
                 else break;
             }
@@ -245,7 +248,6 @@ namespace TicTacToe3D.Game
             return false;
         }
 
-        //TODO
         public void Restart()
         {
             foreach (var p in _players)
@@ -253,6 +255,7 @@ namespace TicTacToe3D.Game
                 p.MarkedFields.Clear();
             }
             _moves = 0;
+            GameBoard.Clear();
             Start();
         }
 

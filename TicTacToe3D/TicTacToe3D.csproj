@@ -58,6 +58,10 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Page Include="Controls\GameResultMessageControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -66,7 +70,9 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Drawing\DrawOnCanvas.cs" />
+    <Compile Include="Controls\GameResultMessageControl.xaml.cs">
+      <DependentUpon>GameResultMessageControl.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Drawing\Transform3DTool.cs" />
     <Compile Include="Game\Cube.cs" />
     <Compile Include="Game\Face.cs" />
@@ -120,9 +126,14 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Resource Include="Assets\logo.png" />
+  </ItemGroup>
   <ItemGroup>
     <Resource Include="Assets\bg.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Assets\back_button.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

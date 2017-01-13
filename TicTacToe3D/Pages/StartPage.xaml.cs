@@ -1,29 +1,57 @@
-﻿using System.Windows;
+﻿using System;
+using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Threading;
+using TicTacToe3D.Game;
 
 namespace TicTacToe3D.Pages
 {
-    /// <summary>
-    /// Interaction logic for StartPage.xaml
-    /// </summary>
     public partial class StartPage : Page
     {
         private readonly MainWindow _mainWinow;
+        private readonly DispatcherTimer _timer;
+        private readonly GameBoard _gameBoard;
 
         public StartPage()
         {
-            _mainWinow = Application.Current.MainWindow as MainWindow;
             InitializeComponent();
+
+            _mainWinow = Application.Current.MainWindow as MainWindow;
+
+            _timer = new DispatcherTimer { Interval = TimeSpan.FromMilliseconds(70) };
+            _timer.Tick += (sender, args) => _gameBoard?.RotateXY(0.35, 0.35);
+
+            _gameBoard = new GameBoard(5, AnimationCanvas);
         }
 
-        private void Game3_OnClick(object sender, RoutedEventArgs e)
+        private void StartPage_OnLoaded(object sender, RoutedEventArgs e)
         {
-            _mainWinow?.NavigateToGamePage(2, 3);
+            _timer.Start();
         }
 
-        private void Game5_OnClick(object sender, RoutedEventArgs e)
+        private void StartPage_OnUnloaded(object sender, RoutedEventArgs e)
         {
-            _mainWinow?.NavigateToGamePage(2, 5);
+            _timer.Stop();
+        }
+
+        private void Game3p1_OnClick(object sender, RoutedEventArgs e)
+        {
+            _mainWinow?.NavigateToGamePage(3);
+        }
+
+        private void Game3p2_OnClick(object sender, RoutedEventArgs e)
+        {
+            _mainWinow?.NavigateToGamePage(3, false);
+        }
+
+        private void Game5p1_OnClick(object sender, RoutedEventArgs e)
+        {
+            _mainWinow?.NavigateToGamePage(5);
+        }
+
+        private void Game5p2_OnClick(object sender, RoutedEventArgs e)
+        {
+            _mainWinow?.NavigateToGamePage(5, false);
         }
     }
 }

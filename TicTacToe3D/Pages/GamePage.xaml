@@ -4,12 +4,32 @@
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
       xmlns:local="clr-namespace:TicTacToe3D.Pages"
+      xmlns:controls="clr-namespace:TicTacToe3D.Controls"
       mc:Ignorable="d" 
       d:DesignHeight="640" d:DesignWidth="960"
       Loaded="GamePage_OnLoaded"
       Unloaded="GamePage_OnUnloaded"
       Title="GamePage">
-
+    <Page.Resources>
+        <Style TargetType="{x:Type Button}">
+            <Setter Property="BorderThickness" Value="0" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type Button}">
+                        <Border Background="{TemplateBinding Background}" Padding="15">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Opacity" Value="0.7"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+    </Page.Resources>
+    
     <Grid>
         <Grid.Background>
             <ImageBrush ImageSource="/TicTacToe3D;component/Assets/bg.jpg" Stretch="UniformToFill"/>
@@ -38,7 +58,6 @@
                 Orientation="Horizontal">
                 <Rectangle
                     Name="PlayerColorRectangle"
-                    Fill="Red"
                     Stroke="White"
                     Width="21"
                     Height="21"/>
@@ -57,9 +76,19 @@
             Name="BackToMenu"
             VerticalAlignment="Top"
             HorizontalAlignment="Left"
-            Content="BACK"
             Click="BackToMenu_OnClick"
-            Margin="20"/>
+            Width="48"
+            Height="48"
+            Margin="20">
+            <Button.Background>
+                <ImageBrush ImageSource="/TicTacToe3D;component/Assets/back_button.png" Stretch="UniformToFill"/>
+            </Button.Background>
+        </Button>
+
+        <controls:GameResultMessageControl 
+            x:Name="ResultMessage"
+            Visibility="Visible"
+            YesClicked="ResultMessage_OnYesClicked" />
      </Grid>
 </Page>
 

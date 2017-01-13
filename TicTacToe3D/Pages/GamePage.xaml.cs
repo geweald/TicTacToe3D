@@ -1,31 +1,53 @@
-﻿using System.Windows;
+﻿using System;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 
 namespace TicTacToe3D.Pages
 {
-    /// <summary>
-    /// Interaction logic for GamePage.xaml
-    /// </summary>
     public partial class GamePage : Page
     {
+        public delegate void MakeMoveUpdateDelegate();
+
         private Game.Game _game;
         private Point _mousePos;
-        private int _players;
         private ushort _size;
+        private bool _withComputer;
+        private readonly MakeMoveUpdateDelegate _moveUpdateDelegate;
+
 
         public GamePage()
         {
             InitializeComponent();
+
+            _moveUpdateDelegate += UpdateNameAndColor;
+            _moveUpdateDelegate += UpdateResultMessage;
         }
 
         private void GamePage_OnLoaded(object sender, RoutedEventArgs e)
         {
             Application.Current.MainWindow.KeyDown += GamePage_OnKeyDown;
             Application.Current.MainWindow.SizeChanged += MainWindowOnSizeChanged;
-
-            _game = new Game.Game(_size, GameCanvas);
+            _game = new Game.Game(_size, GameCanvas, _moveUpdateDelegate);
+            _game.PlayWithComputer(_withComputer);
             _game.Start();
+
+            ResultMessage.Visibility = Visibility.Collapsed;
+        }
+
+        private void UpdateResultMessage()
+        {
+            if (_game.GameOver)
+            {
+                ResultMessage.Message = $"{_game.NextPlayer().Name} WON!";
+                ResultMessage.Visibility = Visibility.Visible;
+            }
+        }
+
+        private void UpdateNameAndColor()
+        {
+            PlayerColorRectangle.Fill = _game.NextPlayer().Color;
+            PlayerName.Text = _game.NextPlayer().Name;
         }
 
         private void MainWindowOnSizeChanged(object sender, SizeChangedEventArgs sizeChangedEventArgs)
@@ -118,15 +140,21 @@ namespace TicTacToe3D.Pages
             _mousePos = e.GetPosition(GameCanvas);
         }
 
-        public void SetGameSettings(int players, ushort size)
+        public void SetGameSettings(ushort size, bool computer = true)
         {
-            _players = players;
             _size = size;
+            _withComputer = computer;
         }
 
         private void BackToMenu_OnClick(object sender, RoutedEventArgs e)
         {
             NavigationService?.GoBack();
+        }
+
+        private void ResultMessage_OnYesClicked(object sender, EventArgs e)
+        {
+            _game.Restart();
+            ResultMessage.Visibility = Visibility.Collapsed;
         }
     }
 }

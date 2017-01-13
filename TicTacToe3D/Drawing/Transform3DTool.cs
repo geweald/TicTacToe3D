@@ -6,7 +6,6 @@ namespace TicTacToe3D.Drawing
 {
     internal class Transform3DTool
     {
-        private static Transform3DTool _instance;
         private Matrix3D _projection;
         private Matrix3D _transform;
         private double _canvasHalfWidth;
@@ -16,16 +15,16 @@ namespace TicTacToe3D.Drawing
         public double D { get; }
 
 
-        private Transform3DTool()
+        public Transform3DTool()
         {
             D = 5.0;
             _zoom = D;
             _projection.OffsetZ = D;
-        }
 
-        public static Transform3DTool Instance()
-        {
-            return _instance ?? (_instance = new Transform3DTool());
+            RotateZ(90);
+            RotateY(-90);
+            RotateX(70);
+            RotateY(-20);
         }
 
         public Point TransformPointTo2D(Point3D point3D)
@@ -83,7 +82,7 @@ namespace TicTacToe3D.Drawing
                 M32 = sin,
                 M23 = -sin
             };
-            _transform = rot;
+            _transform = Matrix3D.Multiply(_transform, rot);
         }
 
         public void RotateY(double a)
@@ -98,17 +97,14 @@ namespace TicTacToe3D.Drawing
                 M13 = sin,
                 M31 = -sin
             };
-            _transform = rot;
+            _transform = Matrix3D.Multiply(_transform, rot);
         }
 
         public void RotateXY(double x, double y)
         {
             RotateX(x);
-            var transform = _transform;
             RotateY(y);
-            _transform = Matrix3D.Multiply(_transform, transform);
         }
-
 
         public void RotateZ(double a)
         {
@@ -122,7 +118,12 @@ namespace TicTacToe3D.Drawing
                 M21 = sin,
                 M12 = -sin
             };
-            _transform = rot;
+            _transform = Matrix3D.Multiply(_transform, rot);
+        }
+
+        public void ResetRotation()
+        {
+            _transform = new Matrix3D();
         }
 
         public void Zoom(double zoom)

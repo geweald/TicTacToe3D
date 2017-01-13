@@ -42,41 +42,43 @@ namespace TicTacToe3D.Game
         #endregion
 
         private readonly GameField[,,] _gameFields;
-        private List<GameField> _gameFieldsList;
         private readonly int _size;
         private readonly Transform3DTool _transform3DTool;
         private readonly Canvas _canvas;
+        private readonly Game _game;
 
-        private int _highlightedLayer;
+        private List<GameField> _gameFieldsList;
+
+        public int HighlightedLayer { get; private set; }
         public int HighlightedField { get; private set; }
 
 
-        public GameBoard(ushort size, Canvas canvas)
+        public GameBoard(ushort size, Canvas canvas, Game game = null)
         {
             FreezeBrushes();
 
             _size = size;
-            _transform3DTool = Transform3DTool.Instance();
             _canvas = canvas;
-            _highlightedLayer = 0;
+            _game = game;
+            _transform3DTool = new Transform3DTool();
+            _gameFields = new GameField[_size, _size, _size];
+            _transform3DTool.SetZoom(3 * _size);
+
+            HighlightedLayer = 0;
             HighlightedField = 0;
 
-            _gameFields = new GameField[_size, _size, _size];
-            MakeCubes();
-            SetZoom();
-
-            RotateZ(90);
-            RotateY(-90);
-            RotateX(70);
-            RotateY(-20);
+            GenerateFields();
+            TransformCubes();
         }
 
         public void DrawGameBoard()
         {
             _transform3DTool.SetCanvasSize(_canvas.ActualWidth, _canvas.ActualHeight);
-            CubesListSortZDesc();
-            var innerCanvas = new Canvas { CacheMode = new BitmapCache() };
             _canvas.Children.Clear();
+
+            CubesListSortZDesc();
+
+            var innerCanvas = new Canvas { CacheMode = new BitmapCache() };
 
             var watch = System.Diagnostics.Stopwatch.StartNew();
             foreach (var gfield in _gameFieldsList)
@@ -84,27 +86,29 @@ namespace TicTacToe3D.Game
                 DrawGameField(gfield, innerCanvas);
             }
             watch.Stop();
-            var elapsedMs = watch.ElapsedTicks;
+            var elapsedMs = watch.ElapsedMilliseconds;
             Console.WriteLine("DRAW TICKS: " + elapsedMs);
+
             _canvas.Children.Add(innerCanvas);
+            _transform3DTool.ResetRotation();
         }
 
         public void ChangeLayer(bool next = true)
         {
             if (next)
             {
-                if (_highlightedLayer < _size - 1)
+                if (HighlightedLayer < _size - 1)
                 {
-                    ++_highlightedLayer;
+                    ++HighlightedLayer;
                     HighlightedField += _size * _size;
                     DrawGameBoard();
                 }
             }
             else
             {
-                if (_highlightedLayer > 0)
+                if (HighlightedLayer > 0)
                 {
-                    --_highlightedLayer;
+                    --HighlightedLayer;
                     HighlightedField -= _size * _size;
                     DrawGameBoard();
                 }
@@ -151,7 +155,6 @@ namespace TicTacToe3D.Game
             DrawGameBoard();
         }
 
-
         public void RotateZ(double a)
         {
             _transform3DTool.RotateZ(a);
@@ -171,7 +174,7 @@ namespace TicTacToe3D.Game
                 gf.Cube.Transform(_transform3DTool);
         }
 
-        private void MakeCubes()
+        private void GenerateFields()
         {
             _gameFieldsList = new List<GameField>();
 
@@ -197,7 +200,7 @@ namespace TicTacToe3D.Game
             var cubeFaces = gameField.Cube.CubeFaces();
             for (var i = 0; i < cubeFaces.Count; ++i)
             {
-                var points = Transform3DTool.Instance().TransformPointsTo2D(cubeFaces[i]);
+                var points = _transform3DTool.TransformPointsTo2D(cubeFaces[i]);
                 var p = new Polygon
                 {
                     Stroke = _strokeBrushes[gameField.Layer],
@@ -206,35 +209,41 @@ namespace TicTacToe3D.Game
                     Fill = _normalBrushes[gameField.Layer],
                     IsHitTestVisible = false
                 };
-                if (gameField.FieldNr == HighlightedField)
-                {
-                    p.Stroke = _highlightStroke;
-                    p.StrokeThickness = 2;
-                }
-                if (gameField.Layer == _highlightedLayer)
-                {
-                    p.Fill = _highlightBrushes[gameField.Layer];
-                    p.IsHitTestVisible = true;
-                    p.MouseEnter += (sender, args) =>
-                    {
-                        if (HighlightedField == gameField.FieldNr
-                        || args.RightButton == MouseButtonState.Pressed)
-                            return;
-                        HighlightedField = gameField.FieldNr;
-                        DrawGameBoard();
-                    };
-                    p.MouseDown += (sender, args) =>
-                    {
-                        if (args.LeftButton == MouseButtonState.Pressed)
-                            Console.WriteLine("OK! pole nr " + gameField.FieldNr);
-                    };
-                }
+                if (_game != null)
+                    AddGameInteractions(gameField, p);
                 canvas.Children.Add(p);
             }
             if (gameField.Marked)
             {
                 var e = CubesSphere(gameField.Cube, gameField.PlayerColor);
                 canvas.Children.Insert(canvas.Children.Count - 3, e);
+            }
+        }
+
+        private void AddGameInteractions(GameField gameField, Polygon polygon)
+        {
+            if (gameField.FieldNr == HighlightedField)
+            {
+                polygon.Stroke = _highlightStroke;
+                polygon.StrokeThickness = 2;
+            }
+            if (gameField.Layer == HighlightedLayer)
+            {
+                polygon.Fill = _highlightBrushes[gameField.Layer];
+                polygon.IsHitTestVisible = true;
+                polygon.MouseEnter += (sender, args) =>
+                {
+                    if (HighlightedField == gameField.FieldNr
+                        || args.RightButton == MouseButtonState.Pressed)
+                        return;
+                    HighlightedField = gameField.FieldNr;
+                    DrawGameBoard();
+                };
+                polygon.MouseDown += (sender, args) =>
+                {
+                    if (args.LeftButton == MouseButtonState.Pressed)
+                        _game.MakeMove();
+                };
             }
         }
 
@@ -278,7 +287,7 @@ namespace TicTacToe3D.Game
         private void ChangeHighlightedFieldLeft()
         {
             var layerItems = _size * _size;
-            var layerStart = _highlightedLayer * layerItems;
+            var layerStart = HighlightedLayer * layerItems;
             var newField = HighlightedField - 1;
             if ((newField >= layerStart) && (HighlightedField % _size > 0))
             {
@@ -290,7 +299,7 @@ namespace TicTacToe3D.Game
         private void ChangeHighlightedFieldRight()
         {
             var layerItems = _size * _size;
-            var layerStart = _highlightedLayer * layerItems;
+            var layerStart = HighlightedLayer * layerItems;
             var layerStop = layerStart + layerItems;
             var newField = HighlightedField + 1;
             if ((newField < layerStop) && (newField % _size > 0))
@@ -303,7 +312,7 @@ namespace TicTacToe3D.Game
         private void ChangeHighlightedFieldUp()
         {
             var layerItems = _size * _size;
-            var layerStart = _highlightedLayer * layerItems;
+            var layerStart = HighlightedLayer * layerItems;
             var layerStop = layerStart + layerItems;
             var newField = HighlightedField + _size;
             if (newField < layerStop)
@@ -316,7 +325,7 @@ namespace TicTacToe3D.Game
         private void ChangeHighlightedFieldDown()
         {
             var layerItems = _size * _size;
-            var layerStart = _highlightedLayer * layerItems;
+            var layerStart = HighlightedLayer * layerItems;
             var newField = HighlightedField - _size;
             if (newField >= layerStart)
             {
@@ -349,14 +358,9 @@ namespace TicTacToe3D.Game
         {
             foreach (var gameField in _gameFields)
                 gameField.Clear();
-            _highlightedLayer = 0;
+            HighlightedLayer = 0;
             HighlightedField = 0;
             DrawGameBoard();
-        }
-
-        private void SetZoom()
-        {
-            _transform3DTool.SetZoom(3 * _size);
         }
     }
 }

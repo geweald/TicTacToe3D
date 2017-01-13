@@ -30,9 +30,9 @@ namespace TicTacToe3D
             MainFrame.NavigationService.Navigate(_startPage);
         }
 
-        public void NavigateToGamePage(int players, ushort size)
+        public void NavigateToGamePage(ushort size, bool computer = true)
         {
-            _gamePage.SetGameSettings(players, size);
+            _gamePage.SetGameSettings(size, computer);
             MainFrame.NavigationService.Navigate(_gamePage);
         }
     }
