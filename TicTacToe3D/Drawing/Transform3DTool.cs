@@ -56,6 +56,10 @@ namespace TicTacToe3D.Drawing
             return points3D;
         }
 
+        public double GetCamZ()
+        {
+            return _zoom + 2 * D;
+        }
 
         public void SetOffset(double x, double y)
         {

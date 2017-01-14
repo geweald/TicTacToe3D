@@ -6,6 +6,11 @@ using TicTacToe3D.Pages;
 
 namespace TicTacToe3D.Game
 {
+    enum GameState
+    {
+        Running, Win, Draw
+    }
+
     class Game
     {
         private readonly List<Player> _players;
@@ -13,7 +18,7 @@ namespace TicTacToe3D.Game
         private readonly int _size;
         private int _moves;
 
-        public bool GameOver { get; private set; }
+        public GameState GameState { get; private set; }
         public GameBoard GameBoard { get; }
         private readonly GamePage.MakeMoveUpdateDelegate _moveUpdateDelegate;
 
@@ -21,14 +26,14 @@ namespace TicTacToe3D.Game
         {
             _players = new List<Player>
             {
-                new Player("White Player", new SolidColorBrush(Color.FromArgb(255, 255, 255, 255))),
-                new Player("Black Player", new SolidColorBrush(Color.FromArgb(255, 0, 0, 0))),
+                new Player("White Player", new SolidColorBrush(Color.FromArgb(175, 255, 255, 255))),
+                new Player("Red Player", new SolidColorBrush(Color.FromArgb(175, 0, 0, 0))),
             };
-            _players[1].IsComputer = true;
             _moves = 0;
             _size = size;
             _fields = size * size * size;
 
+            GameState = GameState.Running;
             GameBoard = new GameBoard(size, canvas, this);
             _moveUpdateDelegate = moveUpdate;
         }
@@ -36,8 +41,20 @@ namespace TicTacToe3D.Game
 
         public void Start()
         {
-            GameOver = false;
+            _moveUpdateDelegate();
+            GameState = GameState.Running;
             GameBoard.DrawGameBoard();
+        }
+
+        public void Restart()
+        {
+            foreach (var p in _players)
+            {
+                p.ClearFields();
+            }
+            _moves = 0;
+            GameBoard.Clear();
+            Start();
         }
 
         public void PlayWithComputer(bool withComputer = true)
@@ -47,14 +64,16 @@ namespace TicTacToe3D.Game
 
         public void MakeMove()
         {
-            if (GameOver) return;
+            if (GameState != GameState.Running) return;
 
             var player = NextPlayer();
             if (!MakeNextMove(player, GameBoard.HighlightedField))
                 return;
 
             var nextPlayer = NextPlayer();
-            if (nextPlayer.IsComputer) RandomMove(nextPlayer);
+
+            if (GameState == GameState.Running && nextPlayer.IsComputer)
+                RandomMove(nextPlayer);
         }
 
         public Player NextPlayer()
@@ -62,34 +81,27 @@ namespace TicTacToe3D.Game
             return _players[_moves % _players.Count];
         }
 
+
         private bool MakeNextMove(Player player, int field)
         {
             var success = GameBoard.MarkField(field, player.Color);
             if (!success) return false;
-            _moves++;
-            player.MarkedFields.Add(field);
+            player.MarkField(field);
 
-            if (CheckWin(player.MarkedFields))
+            if (CheckWin(player.MarkedFields()))
             {
-                GameOver = true;
-
-                if (_moves >= _fields)
-                {
-                    //DrawAlert();
-                }
-                else
-                {
-                    //WinAlert(player);
-                }
+                GameState = _moves >= _fields ? GameState.Draw : GameState.Win;
             }
-
+            else
+            {
+                _moves++;
+            }
             _moveUpdateDelegate();
             return true;
         }
 
         private void RandomMove(Player player)
         {
-            if (GameOver) return;
             var fields = _size * _size * _size;
             var rnd = new Random();
             var field = rnd.Next(fields);
@@ -100,7 +112,7 @@ namespace TicTacToe3D.Game
             }
         }
 
-        private bool CheckWin(List<int> playerMarkedFields)
+        private bool CheckWin(IList<int> playerMarkedFields)
         {
             var last = playerMarkedFields[playerMarkedFields.Count - 1];
             var layerFields = _size * _size;
@@ -248,16 +260,6 @@ namespace TicTacToe3D.Game
             return false;
         }
 
-        public void Restart()
-        {
-            foreach (var p in _players)
-            {
-                p.MarkedFields.Clear();
-            }
-            _moves = 0;
-            GameBoard.Clear();
-            Start();
-        }
 
     }
 }

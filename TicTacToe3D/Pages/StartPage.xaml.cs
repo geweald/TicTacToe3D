@@ -21,7 +21,7 @@ namespace TicTacToe3D.Pages
             _timer = new DispatcherTimer { Interval = TimeSpan.FromMilliseconds(70) };
             _timer.Tick += (sender, args) => _gameBoard?.RotateXY(0.35, 0.35);
 
-            _gameBoard = new GameBoard(5, AnimationCanvas);
+            _gameBoard = new GameBoard(3, AnimationCanvas);
         }
 
         private void StartPage_OnLoaded(object sender, RoutedEventArgs e)

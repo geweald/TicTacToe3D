@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Collections.Generic;
 using System.Windows.Media.Media3D;
-using TicTacToe3D.Drawing;
 
 namespace TicTacToe3D.Game
 {
@@ -10,8 +7,9 @@ namespace TicTacToe3D.Game
     {
         private Point3D[] _vertexes;
         private readonly Face[] _faces;
-        private Point3D _center;
-        public double Size { get; private set; }
+
+        public Point3D Center { get; private set; }
+
 
         public Cube(double x, double y, double z)
         {
@@ -23,21 +21,26 @@ namespace TicTacToe3D.Game
             SetCubeFaces();
         }
 
-        public void Transform(Transform3DTool t3D)
+        public void Transform(Point3D[] transformedVertexes)
         {
-            t3D.TransformPoints3D(_vertexes);
-            CalculateCenterAndSize();
+            _vertexes = transformedVertexes;
+            CalculateCenter();
             SetCubeFaces();
         }
 
-        public List<Point3D[]> CubeFaces()
+        public Point3D[] CubeVertexes()
         {
-            var result = new List<Point3D[]>();
-            var faces = _faces.OrderByDescending(f => f.MaxZ).ToArray();
-            foreach (var face in faces)
-                result.Add(face.Points());
+            return _vertexes;
+        }
+
+        public List<Face> CubeFaces()
+        {
+            var result = new List<Face>();
+            foreach (var face in _faces)
+                result.Add(face);
             return result;
         }
+
 
         private void MakeCubeVertexes(double x, double y, double z)
         {
@@ -48,47 +51,38 @@ namespace TicTacToe3D.Game
                     for (int k = 0; k < 2; k++)
                         _vertexes[--v] = new Point3D(x + i, y + j, z + k);
 
-
-            CalculateCenterAndSize();
+            CalculateCenter();
         }
 
-        private void CalculateCenterAndSize()
+        private void CalculateCenter()
         {
             var centerX = (_vertexes[0].X + _vertexes[7].X) / 2;
             var centerY = (_vertexes[0].Y + _vertexes[7].Y) / 2;
             var centerZ = (_vertexes[0].Z + _vertexes[7].Z) / 2;
-            _center.X = centerX;
-            _center.Y = centerY;
-            _center.Z = centerZ;
-
-            Size = Math.Sqrt(
-                Math.Pow(_vertexes[0].X - _vertexes[1].X, 2) +
-                Math.Pow(_vertexes[0].Y - _vertexes[1].Y, 2) +
-                Math.Pow(_vertexes[0].Z - _vertexes[1].Z, 2));
+            Center = new Point3D
+            {
+                X = centerX,
+                Y = centerY,
+                Z = centerZ
+            };
         }
 
         private void SetCubeFaces()
         {
-            _faces[0].SetPoints(GetVertexes(0, 1, 3, 2));
-            _faces[1].SetPoints(GetVertexes(0, 1, 5, 4));
-            _faces[2].SetPoints(GetVertexes(0, 2, 6, 4));
-            _faces[3].SetPoints(GetVertexes(1, 3, 7, 5));
-            _faces[4].SetPoints(GetVertexes(2, 3, 7, 6));
-            _faces[5].SetPoints(GetVertexes(4, 5, 7, 6));
+            _faces[0].SetPoints(Vertexes(0, 1, 3, 2), Center);
+            _faces[1].SetPoints(Vertexes(0, 1, 5, 4), Center);
+            _faces[2].SetPoints(Vertexes(0, 2, 6, 4), Center);
+            _faces[3].SetPoints(Vertexes(1, 3, 7, 5), Center);
+            _faces[4].SetPoints(Vertexes(2, 3, 7, 6), Center);
+            _faces[5].SetPoints(Vertexes(4, 5, 7, 6), Center);
         }
 
-        private Point3D[] GetVertexes(int a, int b, int c, int d)
+        private Point3D[] Vertexes(int a, int b, int c, int d)
         {
             return new[]
             {
                 _vertexes[a], _vertexes[b], _vertexes[c], _vertexes[d]
             };
         }
-
-        public Point3D Center()
-        {
-            return _center;
-        }
-
     }
 }

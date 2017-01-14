@@ -71,28 +71,6 @@ namespace TicTacToe3D.Game
             TransformCubes();
         }
 
-        public void DrawGameBoard()
-        {
-            _transform3DTool.SetCanvasSize(_canvas.ActualWidth, _canvas.ActualHeight);
-            _canvas.Children.Clear();
-
-            CubesListSortZDesc();
-
-            var innerCanvas = new Canvas { CacheMode = new BitmapCache() };
-
-            var watch = System.Diagnostics.Stopwatch.StartNew();
-            foreach (var gfield in _gameFieldsList)
-            {
-                DrawGameField(gfield, innerCanvas);
-            }
-            watch.Stop();
-            var elapsedMs = watch.ElapsedMilliseconds;
-            Console.WriteLine("DRAW TICKS: " + elapsedMs);
-
-            _canvas.Children.Add(innerCanvas);
-            _transform3DTool.ResetRotation();
-        }
-
         public void ChangeLayer(bool next = true)
         {
             if (next)
@@ -134,6 +112,25 @@ namespace TicTacToe3D.Game
             }
         }
 
+        public bool MarkField(int field, SolidColorBrush playerColor)
+        {
+            var highlightedGameField = _gameFieldsList.SingleOrDefault(gf => gf.FieldNr == field);
+            if (highlightedGameField == null) return false;
+            var result = highlightedGameField.Mark(playerColor);
+            if (result) DrawGameBoard();
+            return result;
+        }
+
+        public void Clear()
+        {
+            foreach (var gameField in _gameFields)
+                gameField.Clear();
+            HighlightedLayer = 0;
+            HighlightedField = 0;
+            DrawGameBoard();
+        }
+
+
         public void RotateX(double a)
         {
             _transform3DTool.RotateX(a);
@@ -168,39 +165,42 @@ namespace TicTacToe3D.Game
             DrawGameBoard();
         }
 
-        private void TransformCubes()
+        public void DrawGameBoard()
         {
-            foreach (var gf in _gameFields)
-                gf.Cube.Transform(_transform3DTool);
+            _transform3DTool.SetCanvasSize(_canvas.ActualWidth, _canvas.ActualHeight);
+            _canvas.Children.Clear();
+
+            CubesListSortZDesc();
+
+            var innerCanvas = new Canvas { CacheMode = new BitmapCache() };
+
+            var watch = System.Diagnostics.Stopwatch.StartNew();
+            foreach (var gfield in _gameFieldsList)
+            {
+                DrawGameField(gfield, innerCanvas);
+            }
+            watch.Stop();
+            var elapsedMs = watch.ElapsedTicks;
+            Console.WriteLine("DRAW TICKS: " + elapsedMs);
+
+            _canvas.Children.Add(innerCanvas);
+            _transform3DTool.ResetRotation();
         }
 
-        private void GenerateFields()
-        {
-            _gameFieldsList = new List<GameField>();
-
-            var margin = 0.1;
-            var x = -(_size + (_size - 1) * margin) / 2.0;
-            var y = x;
-            var z = x;
-
-            var nr = 0;
-            for (var i = 0; i < _size; i++)
-                for (var j = 0; j < _size; j++)
-                    for (var k = 0; k < _size; k++)
-                    {
-                        var gf = new GameField(
-                            new[] { x + i + i * margin, y + j + j * margin, z + k + k * margin }, i, nr++);
-                        _gameFields[i, j, k] = gf;
-                        _gameFieldsList.Add(gf);
-                    }
-        }
 
         private void DrawGameField(GameField gameField, Canvas canvas)
         {
             var cubeFaces = gameField.Cube.CubeFaces();
+            if (gameField.Marked)
+            {
+                var e = CubesSphere(gameField.Cube, gameField.PlayerColor);
+                canvas.Children.Add(e);
+            }
             for (var i = 0; i < cubeFaces.Count; ++i)
             {
-                var points = _transform3DTool.TransformPointsTo2D(cubeFaces[i]);
+                if (!cubeFaces[i].IsVisible(_transform3DTool.GetCamZ())) continue;
+
+                var points = _transform3DTool.TransformPointsTo2D(cubeFaces[i].Points());
                 var p = new Polygon
                 {
                     Stroke = _strokeBrushes[gameField.Layer],
@@ -213,11 +213,7 @@ namespace TicTacToe3D.Game
                     AddGameInteractions(gameField, p);
                 canvas.Children.Add(p);
             }
-            if (gameField.Marked)
-            {
-                var e = CubesSphere(gameField.Cube, gameField.PlayerColor);
-                canvas.Children.Insert(canvas.Children.Count - 3, e);
-            }
+
         }
 
         private void AddGameInteractions(GameField gameField, Polygon polygon)
@@ -249,25 +245,11 @@ namespace TicTacToe3D.Game
 
         private Ellipse CubesSphere(Cube cube, SolidColorBrush color)
         {
-            var center = cube.Center();
-            var centerAndD = new Point3D(center.X + cube.Size, center.Y, center.Z);
+            var center = cube.Center;
+            var centerAndD = new Point3D(center.X + 1, center.Y, center.Z);
             var elc = _transform3DTool.TransformPointTo2D(center);
             var els = _transform3DTool.TransformPointTo2D(centerAndD);
             var d = Math.Sqrt(Math.Pow(elc.X - els.X, 2) + Math.Pow(elc.Y - els.Y, 2)) * 0.8;
-            //            var fill = new RadialGradientBrush
-            //            {
-            //                GradientOrigin = new Point(0.7, 0.3),
-            //                GradientStops = new GradientStopCollection
-            //                {
-            //                    new GradientStop(Colors.White, 0),
-            //                    new GradientStop(
-            //                        color.Color == Colors.White
-            //                        ? Colors.Gray
-            //                        : color.Color,
-            //                        1)
-            //                }
-            //            };
-            //            fill.Freeze();
             var e = new Ellipse
             {
                 Width = d,
@@ -279,9 +261,36 @@ namespace TicTacToe3D.Game
             return e;
         }
 
+        private void TransformCubes()
+        {
+            foreach (var gf in _gameFields)
+                gf.Cube.Transform(_transform3DTool.TransformPoints3D(gf.Cube.CubeVertexes()));
+        }
+
+        private void GenerateFields()
+        {
+            _gameFieldsList = new List<GameField>();
+
+            var margin = 0.1;
+            var x = -(_size + (_size - 1) * margin) / 2.0;
+            var y = x;
+            var z = x;
+
+            var nr = 0;
+            for (var i = 0; i < _size; i++)
+                for (var j = 0; j < _size; j++)
+                    for (var k = 0; k < _size; k++)
+                    {
+                        var gf = new GameField(
+                            new[] { x + i + i * margin, y + j + j * margin, z + k + k * margin }, i, nr++);
+                        _gameFields[i, j, k] = gf;
+                        _gameFieldsList.Add(gf);
+                    }
+        }
+
         private void CubesListSortZDesc()
         {
-            _gameFieldsList = _gameFieldsList.OrderByDescending(gf => gf.Cube.Center().Z).ToList();
+            _gameFieldsList = _gameFieldsList.OrderByDescending(gf => gf.Cube.Center.Z).ToList();
         }
 
         private void ChangeHighlightedFieldLeft()
@@ -343,24 +352,6 @@ namespace TicTacToe3D.Game
             foreach (var solidColorBrush in _strokeBrushes)
                 solidColorBrush.Freeze();
             _highlightStroke.Freeze();
-        }
-
-        public bool MarkField(int field, SolidColorBrush playerColor)
-        {
-            var highlightedGameField = _gameFieldsList.SingleOrDefault(gf => gf.FieldNr == field);
-            if (highlightedGameField == null) return false;
-            var result = highlightedGameField.Mark(playerColor);
-            if (result) DrawGameBoard();
-            return result;
-        }
-
-        public void Clear()
-        {
-            foreach (var gameField in _gameFields)
-                gameField.Clear();
-            HighlightedLayer = 0;
-            HighlightedField = 0;
-            DrawGameBoard();
         }
     }
 }

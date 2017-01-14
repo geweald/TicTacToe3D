@@ -2,6 +2,7 @@
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using TicTacToe3D.Game;
 
 namespace TicTacToe3D.Pages
 {
@@ -13,22 +14,22 @@ namespace TicTacToe3D.Pages
         private Point _mousePos;
         private ushort _size;
         private bool _withComputer;
-        private readonly MakeMoveUpdateDelegate _moveUpdateDelegate;
+        private readonly MakeMoveUpdateDelegate _updateAfterMoveDelegate;
 
 
         public GamePage()
         {
             InitializeComponent();
 
-            _moveUpdateDelegate += UpdateNameAndColor;
-            _moveUpdateDelegate += UpdateResultMessage;
+            _updateAfterMoveDelegate += UpdateNameAndColor;
+            _updateAfterMoveDelegate += UpdateResultMessage;
         }
 
         private void GamePage_OnLoaded(object sender, RoutedEventArgs e)
         {
             Application.Current.MainWindow.KeyDown += GamePage_OnKeyDown;
             Application.Current.MainWindow.SizeChanged += MainWindowOnSizeChanged;
-            _game = new Game.Game(_size, GameCanvas, _moveUpdateDelegate);
+            _game = new Game.Game(_size, GameCanvas, _updateAfterMoveDelegate);
             _game.PlayWithComputer(_withComputer);
             _game.Start();
 
@@ -37,7 +38,12 @@ namespace TicTacToe3D.Pages
 
         private void UpdateResultMessage()
         {
-            if (_game.GameOver)
+            if (_game.GameState == GameState.Draw)
+            {
+                ResultMessage.Message = "DRAW!";
+                ResultMessage.Visibility = Visibility.Visible;
+            }
+            else if (_game.GameState == GameState.Win)
             {
                 ResultMessage.Message = $"{_game.NextPlayer().Name} WON!";
                 ResultMessage.Visibility = Visibility.Visible;
@@ -46,8 +52,12 @@ namespace TicTacToe3D.Pages
 
         private void UpdateNameAndColor()
         {
-            PlayerColorRectangle.Fill = _game.NextPlayer().Color;
-            PlayerName.Text = _game.NextPlayer().Name;
+            if (_game.GameState == GameState.Running)
+            {
+                PlayerColorRectangle.Fill = _game.NextPlayer().Color;
+                PlayerName.Text = _game.NextPlayer().Name;
+            }
+
         }
 
         private void MainWindowOnSizeChanged(object sender, SizeChangedEventArgs sizeChangedEventArgs)
@@ -87,16 +97,16 @@ namespace TicTacToe3D.Pages
                     _game.GameBoard.Zoom(-0.3);
                     break;
                 case Key.X:
-                    _game.GameBoard.RotateX(2);
+                    _game.GameBoard.RotateX(1);
                     break;
                 case Key.Z:
-                    _game.GameBoard.RotateX(-2);
+                    _game.GameBoard.RotateX(-1);
                     break;
                 case Key.C:
-                    _game.GameBoard.RotateY(2);
+                    _game.GameBoard.RotateY(1);
                     break;
                 case Key.V:
-                    _game.GameBoard.RotateY(-2);
+                    _game.GameBoard.RotateY(-1);
                     break;
                 case Key.B:
                     _game.GameBoard.RotateZ(2);
@@ -154,7 +164,6 @@ namespace TicTacToe3D.Pages
         private void ResultMessage_OnYesClicked(object sender, EventArgs e)
         {
             _game.Restart();
-            ResultMessage.Visibility = Visibility.Collapsed;
         }
     }
 }

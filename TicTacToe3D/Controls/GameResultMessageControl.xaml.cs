@@ -33,6 +33,7 @@ namespace TicTacToe3D.Controls
         private void YesButton_OnClick(object sender, RoutedEventArgs e)
         {
             YesClicked?.Invoke(this, EventArgs.Empty);
+            Visibility = Visibility.Collapsed;
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
