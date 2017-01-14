@@ -26,8 +26,8 @@ namespace TicTacToe3D.Game
         {
             _players = new List<Player>
             {
-                new Player("White Player", new SolidColorBrush(Color.FromArgb(175, 255, 255, 255))),
-                new Player("Red Player", new SolidColorBrush(Color.FromArgb(175, 0, 0, 0))),
+                new Player("White Player", new SolidColorBrush(Color.FromArgb(255, 255, 255, 255))),
+                new Player("Red Player", new SolidColorBrush(Color.FromArgb(255, 0, 0, 0))),
             };
             _moves = 0;
             _size = size;

@@ -12,24 +12,32 @@
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="{x:Type Button}">
-                        <Border Background="{TemplateBinding Background}" BorderBrush="White">
+                        <Grid Background="{TemplateBinding Background}">
                             <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                        </Border>
+                        </Grid>
                     </ControlTemplate>
                 </Setter.Value>
             </Setter>
-            <Setter Property="Background" Value="White"></Setter>
+            <Setter Property="Background">
+                <Setter.Value>
+                    <LinearGradientBrush StartPoint="1,-2" EndPoint="0, -1">
+                        <GradientStop Color="#FF8008" Offset="0.0"/>
+                        <GradientStop Color="#FFC837" Offset="1.0"/>
+                    </LinearGradientBrush>
+                </Setter.Value>
+            </Setter>
             <Style.Triggers>
                 <Trigger Property="IsMouseOver" Value="True">
-                    <Setter Property="Background" Value="#DDFFFFFF"/>
+                    <Setter Property="Opacity" Value="0.85"/>
+                    <Setter Property="Cursor" Value="Hand"></Setter>
                 </Trigger>
             </Style.Triggers>
         </Style>
     </UserControl.Resources>
 
-    <Grid>
+    <Grid Margin="0,0,0,-1">
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="1*" />
+            <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
             <RowDefinition Height="1*" />
@@ -61,16 +69,11 @@
         <Button
             Grid.Row="1"
             Grid.Column="0"
-            Foreground="Black"
+            Foreground="White"
             Content="Play Again" 
-            BorderThickness="0"
             FontWeight="Bold"
             FontSize="21"
             Click="YesButton_OnClick" 
         />
-        <Border
-            Grid.Row="0" Grid.RowSpan="2" 
-            BorderBrush="White" 
-            BorderThickness="2" />
     </Grid>
 </UserControl>

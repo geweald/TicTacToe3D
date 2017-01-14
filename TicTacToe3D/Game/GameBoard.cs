@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
@@ -16,25 +17,25 @@ namespace TicTacToe3D.Game
     {
         #region BRUSHES
         private readonly SolidColorBrush[] _normalBrushes = {
-                new SolidColorBrush(Color.FromArgb(20, 255, 0, 0)),
-                new SolidColorBrush(Color.FromArgb(20, 0, 255, 0)),
-                new SolidColorBrush(Color.FromArgb(20, 255, 255, 0)),
-                new SolidColorBrush(Color.FromArgb(20, 255, 0, 255)),
-                new SolidColorBrush(Color.FromArgb(20, 0, 255, 255))
+                new SolidColorBrush(Color.FromArgb(25, 255, 238, 5)),
+                new SolidColorBrush(Color.FromArgb(25, 232, 170, 0)),
+                new SolidColorBrush(Color.FromArgb(25, 255, 133, 5)),
+                new SolidColorBrush(Color.FromArgb(25, 232, 52, 0)),
+                new SolidColorBrush(Color.FromArgb(25, 255, 3, 56))
             };
         private readonly SolidColorBrush[] _highlightBrushes = {
-                new SolidColorBrush(Color.FromArgb(55, 255, 0, 0)),
-                new SolidColorBrush(Color.FromArgb(55, 0, 255, 0)),
-                new SolidColorBrush(Color.FromArgb(55, 255, 255, 0)),
-                new SolidColorBrush(Color.FromArgb(55, 255, 0, 255)),
-                new SolidColorBrush(Color.FromArgb(55, 0, 255, 255))
+                new SolidColorBrush(Color.FromArgb(75, 255, 238, 5)),
+                new SolidColorBrush(Color.FromArgb(75, 232, 170, 0)),
+                new SolidColorBrush(Color.FromArgb(75, 255, 133, 5)),
+                new SolidColorBrush(Color.FromArgb(75, 232, 52, 0)),
+                new SolidColorBrush(Color.FromArgb(75, 255, 3, 56))
             };
         private readonly SolidColorBrush[] _strokeBrushes = {
-                new SolidColorBrush(Color.FromArgb(95, 255, 0, 0)),
-                new SolidColorBrush(Color.FromArgb(95, 0, 255, 0)),
-                new SolidColorBrush(Color.FromArgb(95, 255, 255, 0)),
-                new SolidColorBrush(Color.FromArgb(95, 255, 0, 255)),
-                new SolidColorBrush(Color.FromArgb(95, 0, 255, 255))
+                new SolidColorBrush(Color.FromArgb(125, 255, 238, 5)),
+                new SolidColorBrush(Color.FromArgb(125, 232, 170, 0)),
+                new SolidColorBrush(Color.FromArgb(125, 255, 133, 5)),
+                new SolidColorBrush(Color.FromArgb(125, 232, 52, 0)),
+                new SolidColorBrush(Color.FromArgb(125, 255, 3, 56))
             };
 
         private readonly SolidColorBrush _highlightStroke =
@@ -190,17 +191,18 @@ namespace TicTacToe3D.Game
 
         private void DrawGameField(GameField gameField, Canvas canvas)
         {
+            var camZ = _transform3DTool.GetCamZ();
             var cubeFaces = gameField.Cube.CubeFaces();
             if (gameField.Marked)
             {
-                var e = CubesSphere(gameField.Cube, gameField.PlayerColor);
+                var e = CubesSphere(gameField);
                 canvas.Children.Add(e);
             }
-            for (var i = 0; i < cubeFaces.Count; ++i)
+            foreach (var face in cubeFaces)
             {
-                if (!cubeFaces[i].IsVisible(_transform3DTool.GetCamZ())) continue;
+                if (!face.IsVisible(camZ)) continue;
 
-                var points = _transform3DTool.TransformPointsTo2D(cubeFaces[i].Points());
+                var points = _transform3DTool.TransformPointsTo2D(face.Points());
                 var p = new Polygon
                 {
                     Stroke = _strokeBrushes[gameField.Layer],
@@ -213,7 +215,6 @@ namespace TicTacToe3D.Game
                     AddGameInteractions(gameField, p);
                 canvas.Children.Add(p);
             }
-
         }
 
         private void AddGameInteractions(GameField gameField, Polygon polygon)
@@ -243,19 +244,36 @@ namespace TicTacToe3D.Game
             }
         }
 
-        private Ellipse CubesSphere(Cube cube, SolidColorBrush color)
+        private Ellipse CubesSphere(GameField gameField)
         {
-            var center = cube.Center;
+            var center = gameField.Cube.Center;
             var centerAndD = new Point3D(center.X + 1, center.Y, center.Z);
             var elc = _transform3DTool.TransformPointTo2D(center);
             var els = _transform3DTool.TransformPointTo2D(centerAndD);
-            var d = Math.Sqrt(Math.Pow(elc.X - els.X, 2) + Math.Pow(elc.Y - els.Y, 2)) * 0.8;
+            var d = Math.Sqrt(Math.Pow(elc.X - els.X, 2) + Math.Pow(elc.Y - els.Y, 2)) * 0.7;
+
+            var fill = new RadialGradientBrush
+            {
+                GradientOrigin = new Point(0.75, 0.25),
+                GradientStops = new GradientStopCollection
+                            {
+                                new GradientStop(Colors.White, 0),
+                                new GradientStop(
+                                    gameField.PlayerColor.Color == Colors.White
+                                    ? Colors.LightGray
+                                    : gameField.PlayerColor.Color,
+                                    0.8)
+                            }
+            };
+            fill.Freeze();
             var e = new Ellipse
             {
                 Width = d,
                 Height = d,
-                Fill = color
+                Fill = fill,
+                Opacity = gameField.Layer == HighlightedLayer ? 1 : 0.7
             };
+
             Canvas.SetTop(e, elc.Y - d / 2);
             Canvas.SetLeft(e, elc.X - d / 2);
             return e;

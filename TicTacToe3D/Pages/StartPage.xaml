@@ -11,7 +11,6 @@
       Title="StartPage">
     <Page.Resources>
         <Style TargetType="{x:Type Button}">
-            <Setter Property="BorderThickness" Value="0" />
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="{x:Type Button}">
@@ -21,9 +20,19 @@
                     </ControlTemplate>
                 </Setter.Value>
             </Setter>
+            <Setter Property="Background">
+                <Setter.Value>
+                    <LinearGradientBrush StartPoint="1,-2" EndPoint="0, -1">
+                        <GradientStop Color="#FF8008" Offset="0.0"/>
+                        <GradientStop Color="#FFC837" Offset="1.0"/>
+                    </LinearGradientBrush>
+                </Setter.Value>
+            </Setter>
+            <Setter Property="Foreground" Value="White"></Setter>
             <Style.Triggers>
                 <Trigger Property="IsMouseOver" Value="True">
-                    <Setter Property="Background" Value="#A1FFFFFF"/>
+                    <Setter Property="Opacity" Value="0.8"/>
+                    <Setter Property="Cursor" Value="Hand"></Setter>
                 </Trigger>
             </Style.Triggers>
         </Style>
@@ -48,54 +57,77 @@
         </Canvas>
         <StackPanel
             Grid.Column="1"
+            Margin="0,0,10,0"
             VerticalAlignment="Center"
             HorizontalAlignment="Stretch">
-            <TextBlock
-                Text="CUBE 3"
-                Foreground="White"
-                TextAlignment="Center"
-                FontSize="21"/>
-            <Button
-                Name="Game3p1"
-                Content="1 PLAYER"
-                Margin="10"
-                FontWeight="Bold"
-                FontSize="17"
-                Click="Game3p1_OnClick"/>
-            <Button
-                Name="Game3p2"
-                Content="2 PLAYERS"
-                Margin="10"
-                FontSize="17"
-                FontWeight="Bold"
-                Click="Game3p2_OnClick"/>
+            <Border 
+                BorderThickness="2"
+                BorderBrush="White"
+                Background="White">
+                <StackPanel>
+                <TextBlock
+                    Text="CUBE 3x3x3"
+                    Foreground="White"
+                    TextAlignment="Center"
+                    Padding="13"
+                    FontWeight="Bold"
+                    FontSize="15">
+                    <TextBlock.Background>
+                        <ImageBrush ImageSource="/TicTacToe3D;component/Assets/bg.jpg" Stretch="UniformToFill"/>
+                    </TextBlock.Background>
+                </TextBlock>
+                <Button
+                    Name="Game3P1"
+                    Content="1 PLAYER"
+                    Margin="0,1,0,1"
+                    FontWeight="Bold"
+                    Click="Game3p1_OnClick"/>
+                <Button
+                    Name="Game3P2"
+                    Content="2 PLAYERS"
+                    FontWeight="Bold"
+                    Click="Game3p2_OnClick"/>
+                </StackPanel>
+            </Border>
 
-            <TextBlock
-                Text="CUBE 5"
-                Foreground="White"
-                TextAlignment="Center"
-                FontSize="21"/>
-            <Button
-                Name="Game5p1"
-                Content="1 PLAYER"
-                Margin="10"
-                FontWeight="Bold"
-                FontSize="17"
-                Click="Game5p1_OnClick"/>
-            <Button
-                Name="Game5p2"
-                Content="2 PLAYERS"
-                Margin="10"
-                FontSize="17"
-                FontWeight="Bold"
-                Click="Game5p2_OnClick"/>
+            <Border 
+                Margin="0,30,0,0"
+                BorderThickness="2"
+                BorderBrush="White"
+                Background="White">
+                <StackPanel>
+                    <TextBlock
+                        Text="CUBE 5x5x5"
+                        Foreground="White"
+                        TextAlignment="Center"
+                        FontWeight="Bold"
+                        Padding="13"
+                        FontSize="15">
+                        <TextBlock.Background>
+                            <ImageBrush ImageSource="/TicTacToe3D;component/Assets/bg.jpg" Stretch="UniformToFill"/>
+                        </TextBlock.Background>
+                    </TextBlock>
+                    <Button
+                        Name="Game5P1"
+                        Content="1 PLAYER"
+                        FontWeight="Bold"
+                        Margin="0,1,0,1"
+                        Click="Game5p1_OnClick"/>
+                    <Button
+                        Name="Game5P2"
+                        Content="2 PLAYERS"
+                        FontWeight="Bold"
+                        Click="Game5p2_OnClick"/>
+                </StackPanel>
+            </Border>
         </StackPanel>
+               
         
         <Image
             Grid.Column="0" 
             HorizontalAlignment="Center"
             VerticalAlignment="Top"
-            Margin="50"
+            Margin="100,50,100,50"
             MaxWidth="900"
             Source="/TicTacToe3D;component/Assets/logo.png">
         </Image>

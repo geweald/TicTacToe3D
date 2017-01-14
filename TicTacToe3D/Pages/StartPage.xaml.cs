@@ -18,8 +18,8 @@ namespace TicTacToe3D.Pages
 
             _mainWinow = Application.Current.MainWindow as MainWindow;
 
-            _timer = new DispatcherTimer { Interval = TimeSpan.FromMilliseconds(70) };
-            _timer.Tick += (sender, args) => _gameBoard?.RotateXY(0.35, 0.35);
+            _timer = new DispatcherTimer { Interval = TimeSpan.FromMilliseconds(30) };
+            _timer.Tick += (sender, args) => _gameBoard?.RotateXY(0.25, 0.25);
 
             _gameBoard = new GameBoard(3, AnimationCanvas);
         }

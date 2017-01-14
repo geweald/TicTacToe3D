@@ -88,7 +88,12 @@
         <controls:GameResultMessageControl 
             x:Name="ResultMessage"
             Visibility="Visible"
+            BorderThickness="3"
+            BorderBrush="White"
+            Margin="3"
             YesClicked="ResultMessage_OnYesClicked" />
      </Grid>
 </Page>
+
+
 
