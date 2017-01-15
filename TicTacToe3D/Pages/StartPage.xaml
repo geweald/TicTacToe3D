@@ -11,6 +11,44 @@
       Unloaded="StartPage_OnUnloaded"
       Title="StartPage">
     <Page.Resources>
+        <Style TargetType="{x:Type RadioButton}">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type RadioButton}">
+                        <Border 
+                            BorderThickness="{TemplateBinding BorderThickness}"
+                            BorderBrush="{TemplateBinding BorderBrush}"
+                            Background="White">
+                            <TextBlock
+                                Name="TextBlock"
+                                Text="{TemplateBinding Content}"
+                                Foreground="White"
+                                TextAlignment="Center"
+                                Padding="13"
+                                FontWeight="Bold"
+                                FontSize="15">
+                                <TextBlock.Background>
+                                    <ImageBrush ImageSource="/TicTacToe3D;component/Assets/bg.jpg" 
+                                    Stretch="UniformToFill"/>
+                                </TextBlock.Background>
+                            </TextBlock>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsChecked" Value="True">
+                                <Setter Property="BorderThickness" Value="3"/>
+                                <Setter TargetName="TextBlock" Property="Opacity" Value="0.85"/>
+                                <Setter TargetName="TextBlock" Property="FontWeight" Value="ExtraBold"/>
+                            </Trigger>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="TextBlock" Property="Opacity" Value="0.7"/>
+                                <Setter Property="Cursor" Value="Hand"></Setter>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
         <Style TargetType="{x:Type Button}">
             <Setter Property="Template">
                 <Setter.Value>
@@ -64,70 +102,44 @@
             Margin="0,0,10,40"
             VerticalAlignment="Center"
             HorizontalAlignment="Stretch">
-            <Border 
-                BorderThickness="2"
-                BorderBrush="White"
-                Background="White">
-                <StackPanel>
-                <TextBlock
-                    Text="CUBE 3x3x3"
-                    Foreground="White"
-                    TextAlignment="Center"
-                    Padding="13"
-                    FontWeight="Bold"
-                    FontSize="15">
-                    <TextBlock.Background>
-                        <ImageBrush ImageSource="/TicTacToe3D;component/Assets/bg.jpg" 
-                                    Stretch="UniformToFill"/>
-                    </TextBlock.Background>
-                </TextBlock>
-                <Button
-                    Name="Game3P1"
-                    Content="1 PLAYER"
-                    Margin="0,1,0,1"
-                    FontWeight="Bold"
-                    Padding="15"
-                    Click="Game3p1_OnClick"/>
-                <Button
-                    Name="Game3P2"
-                    Content="2 PLAYERS"
-                    Padding="15"
-                    FontWeight="Bold"
-                    Click="Game3p2_OnClick"/>
-                </StackPanel>
-            </Border>
 
             <Border 
-                Margin="0,30,0,0"
                 BorderThickness="2"
                 BorderBrush="White"
                 Background="White">
                 <StackPanel>
-                    <TextBlock
-                        Text="CUBE 5x5x5"
-                        Foreground="White"
-                        TextAlignment="Center"
-                        FontWeight="Bold"
-                        Padding="13"
-                        FontSize="15">
-                        <TextBlock.Background>
-                            <ImageBrush ImageSource="/TicTacToe3D;component/Assets/bg.jpg" 
-                                        Stretch="UniformToFill"/>
-                        </TextBlock.Background>
-                    </TextBlock>
+                    <RadioButton 
+                        GroupName="CubeSize"
+                        Name="Cube3"
+                        BorderBrush="White"
+                        Content="Cube 3x3x3"
+                        IsChecked="True" />
+                    <RadioButton 
+                        GroupName="CubeSize"
+                        Name="Cube4"
+                        BorderBrush="White"
+                        Content="Cube 4x4x4"
+                        />
+                    <RadioButton 
+                        GroupName="CubeSize"
+                        Name="Cube5"
+                        BorderBrush="White"
+                        Content="Cube 5x5x5"
+                        />
+                   
                     <Button
-                        Name="Game5P1"
+                        Name="Game1PlayerButton"
                         Content="1 PLAYER"
+                        Margin="0,1,0,1"
                         FontWeight="Bold"
                         Padding="15"
-                        Margin="0,1,0,1"
-                        Click="Game5p1_OnClick"/>
+                        Click="Game1PlayerButton_OnClick"/>
                     <Button
-                        Name="Game5P2"
+                        Name="Game2PlayersButton"
                         Content="2 PLAYERS"
                         Padding="15"
                         FontWeight="Bold"
-                        Click="Game5p2_OnClick"/>
+                        Click="Game2PlayersButton_OnClick"/>
                 </StackPanel>
             </Border>
         </StackPanel>
@@ -163,3 +175,6 @@
             />
     </Grid>
 </Page>
+
+
+

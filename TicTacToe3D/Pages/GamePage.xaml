@@ -74,6 +74,7 @@
         
         <Button
             Name="BackToMenu"
+            Focusable="False"
             VerticalAlignment="Top"
             HorizontalAlignment="Left"
             Click="BackToMenu_OnClick"
@@ -92,7 +93,8 @@
             BorderBrush="White"
             Margin="3"
             YesClicked="ResultMessage_OnYesClicked" />
-     </Grid>
+
+    </Grid>
 </Page>
 
 

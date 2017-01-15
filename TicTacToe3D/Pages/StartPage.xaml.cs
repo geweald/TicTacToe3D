@@ -35,29 +35,35 @@ namespace TicTacToe3D.Pages
             _timer.Stop();
         }
 
-        private void Game3p1_OnClick(object sender, RoutedEventArgs e)
-        {
-            _mainWinow?.NavigateToGamePage(3);
-        }
-
-        private void Game3p2_OnClick(object sender, RoutedEventArgs e)
-        {
-            _mainWinow?.NavigateToGamePage(3, false);
-        }
-
-        private void Game5p1_OnClick(object sender, RoutedEventArgs e)
-        {
-            _mainWinow?.NavigateToGamePage(5);
-        }
-
-        private void Game5p2_OnClick(object sender, RoutedEventArgs e)
-        {
-            _mainWinow?.NavigateToGamePage(5, false);
-        }
-
         private void InstructionButton_OnClick(object sender, RoutedEventArgs e)
         {
             Instruction.Visibility = Visibility.Visible;
+        }
+
+        private void Game1PlayerButton_OnClick(object sender, RoutedEventArgs e)
+        {
+            StartGame();
+        }
+
+        private void Game2PlayersButton_OnClick(object sender, RoutedEventArgs e)
+        {
+            StartGame(false);
+        }
+
+        private void StartGame(bool withComputer = true)
+        {
+            if (Cube4.IsChecked.HasValue && Cube4.IsChecked.Value)
+            {
+                _mainWinow?.NavigateToGamePage(4, withComputer);
+            }
+            else if (Cube5.IsChecked.HasValue && Cube5.IsChecked.Value)
+            {
+                _mainWinow?.NavigateToGamePage(5, withComputer);
+            }
+            else
+            {
+                _mainWinow?.NavigateToGamePage(3, withComputer);
+            }
         }
     }
 }
