@@ -4,6 +4,7 @@
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
       xmlns:local="clr-namespace:TicTacToe3D.Pages"
+      xmlns:controls="clr-namespace:TicTacToe3D.Controls"
       mc:Ignorable="d" 
       d:DesignHeight="640" d:DesignWidth="960"
       Loaded="StartPage_OnLoaded"
@@ -14,8 +15,10 @@
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="{x:Type Button}">
-                        <Border Background="{TemplateBinding Background}" Padding="15">
-                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        <Border Background="{TemplateBinding Background}" 
+                                Padding="{TemplateBinding Padding}">
+                            <ContentPresenter HorizontalAlignment="Center" 
+                                              VerticalAlignment="Center"/>
                         </Border>
                     </ControlTemplate>
                 </Setter.Value>
@@ -40,7 +43,8 @@
 
     <Grid>
         <Grid.Background>
-            <ImageBrush ImageSource="/TicTacToe3D;component/Assets/bg.jpg" Stretch="UniformToFill"/>
+            <ImageBrush ImageSource="/TicTacToe3D;component/Assets/bg.jpg" 
+                        Stretch="UniformToFill"/>
         </Grid.Background>
         
         <Grid.ColumnDefinitions>
@@ -57,7 +61,7 @@
         </Canvas>
         <StackPanel
             Grid.Column="1"
-            Margin="0,0,10,0"
+            Margin="0,0,10,40"
             VerticalAlignment="Center"
             HorizontalAlignment="Stretch">
             <Border 
@@ -73,7 +77,8 @@
                     FontWeight="Bold"
                     FontSize="15">
                     <TextBlock.Background>
-                        <ImageBrush ImageSource="/TicTacToe3D;component/Assets/bg.jpg" Stretch="UniformToFill"/>
+                        <ImageBrush ImageSource="/TicTacToe3D;component/Assets/bg.jpg" 
+                                    Stretch="UniformToFill"/>
                     </TextBlock.Background>
                 </TextBlock>
                 <Button
@@ -81,10 +86,12 @@
                     Content="1 PLAYER"
                     Margin="0,1,0,1"
                     FontWeight="Bold"
+                    Padding="15"
                     Click="Game3p1_OnClick"/>
                 <Button
                     Name="Game3P2"
                     Content="2 PLAYERS"
+                    Padding="15"
                     FontWeight="Bold"
                     Click="Game3p2_OnClick"/>
                 </StackPanel>
@@ -104,32 +111,55 @@
                         Padding="13"
                         FontSize="15">
                         <TextBlock.Background>
-                            <ImageBrush ImageSource="/TicTacToe3D;component/Assets/bg.jpg" Stretch="UniformToFill"/>
+                            <ImageBrush ImageSource="/TicTacToe3D;component/Assets/bg.jpg" 
+                                        Stretch="UniformToFill"/>
                         </TextBlock.Background>
                     </TextBlock>
                     <Button
                         Name="Game5P1"
                         Content="1 PLAYER"
                         FontWeight="Bold"
+                        Padding="15"
                         Margin="0,1,0,1"
                         Click="Game5p1_OnClick"/>
                     <Button
                         Name="Game5P2"
                         Content="2 PLAYERS"
+                        Padding="15"
                         FontWeight="Bold"
                         Click="Game5p2_OnClick"/>
                 </StackPanel>
             </Border>
         </StackPanel>
-               
-        
+
+
+        <Button
+            Name="InstructionButton"
+            Grid.Column="1"
+            VerticalAlignment="Bottom"
+            Margin="10"
+            Content="How to play"
+            Padding="5"
+            Background="Transparent"
+            FontWeight="Medium"
+            FontSize="15"
+            Click="InstructionButton_OnClick"/>
+
         <Image
             Grid.Column="0" 
             HorizontalAlignment="Center"
             VerticalAlignment="Top"
             Margin="100,50,100,50"
-            MaxWidth="900"
+            MaxWidth="700"
             Source="/TicTacToe3D;component/Assets/logo.png">
         </Image>
+        
+        <controls:InstructionControl
+            x:Name="Instruction"
+            Grid.ColumnSpan="2" 
+            Grid.Column="0"
+            BorderThickness="3"
+            BorderBrush="White"
+            />
     </Grid>
 </Page>

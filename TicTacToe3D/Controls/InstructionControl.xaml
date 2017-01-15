@@ -1,0 +1,131 @@
+﻿<UserControl x:Class="TicTacToe3D.Controls.InstructionControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:TicTacToe3D.Controls"
+             mc:Ignorable="d" 
+             Height="340" Width="440">
+    <UserControl.Resources>
+        <Style TargetType="{x:Type Button}">
+            <Setter Property="BorderThickness" Value="0" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type Button}">
+                        <Grid Background="{TemplateBinding Background}">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Grid>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Setter Property="Background">
+                <Setter.Value>
+                    <LinearGradientBrush StartPoint="1,-2" EndPoint="0, -1">
+                        <GradientStop Color="#FF8008" Offset="0.0"/>
+                        <GradientStop Color="#FFC837" Offset="1.0"/>
+                    </LinearGradientBrush>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Opacity" Value="0.85"/>
+                    <Setter Property="Cursor" Value="Hand"></Setter>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+    </UserControl.Resources>
+
+    <Grid Margin="0,0,0,-1">
+        <StackPanel
+            VerticalAlignment="Stretch"
+            HorizontalAlignment="Stretch"
+            Margin="0,0,0,40"
+            >
+            <StackPanel.Background>
+                <ImageBrush 
+                ImageSource="/TicTacToe3D;component/Assets/bg.jpg" 
+                Stretch="UniformToFill"
+                Opacity="0.8"/>
+            </StackPanel.Background>
+            <TextBlock
+                VerticalAlignment="Center"
+                HorizontalAlignment="Center"
+                Foreground="White"
+                TextWrapping="Wrap" 
+                TextAlignment="Center" 
+                Margin="10,15,10,0"
+                FontSize="25"
+                FontWeight="Bold"
+                Text="How to play">
+            </TextBlock>
+            <TextBlock
+                Foreground="White"
+                TextWrapping="Wrap" 
+                Margin="10,15,10,10"
+                TextAlignment="Center"
+                >
+                <Run FontWeight="Bold" Text="Mouse"/>
+                <LineBreak/>
+                <Run Text="Use the mouse cursor to select a box and click the "/>
+                <Run FontWeight="Bold" Text="left mouse "/>
+                <Run Text="button to mark it. You are able to select boxes only from the highlighted layer."/>
+                <LineBreak/>
+                <Run Text="Use the "/>
+                <Run FontWeight="Bold" Text="mouse wheel "/>
+                <Run Text="to scroll through game board layers."/>
+                <LineBreak/>
+                <Run Text="Hold the "/>
+                <Run FontWeight="Bold" Text="right mouse "/>
+                <Run Text="button "/>
+                <Run Text="and move the cursor to rotate the camera."/>
+                <LineBreak/><Run Text="Hold the "/>
+                <Run FontWeight="Bold" Text="left control "/>
+                <Run Text="key and use the "/>
+                <Run FontWeight="Bold" Text="mouse wheel "/>
+                <Run Text="to change the scale."/>
+            </TextBlock>
+
+
+            <TextBlock
+                Foreground="White"
+                TextWrapping="Wrap" 
+                Margin="10"
+                TextAlignment="Center"
+                >
+                <Run FontWeight="Bold" Text="Keyboard"/>
+                <LineBreak/>
+                <Run Text="Use "/>
+                <Run FontWeight="Bold" Text="arrow keys "/>
+                <Run Text="to select a box and press the "/>
+                <Run FontWeight="Bold" Text="space key"/>
+                <Run Text=" to mark it. You are able to select boxes only from the highlighted layer."/>
+                <LineBreak/>
+                <Run Text="Use "/>
+                <Run FontWeight="Bold" Text="PgUp"/>
+                <Run Text=" and "/>
+                <Run FontWeight="Bold" Text="PgDn"/>
+                <Run Text=" to change game board layer."/>
+                <LineBreak/>
+                <Run Text="Use "/>
+                <Run FontWeight="Bold" Text="z, x, c, v, b, n "/>
+                <Run Text="to rotate  the camera."/>
+                <LineBreak/>
+                <Run Text="Use "/>
+                <Run FontWeight="Bold" Text="+"/>
+                <Run Text=" and "/>
+                <Run FontWeight="Bold" Text="-"/>
+                <Run Text=" to change the sale."/>
+            </TextBlock>
+        </StackPanel>
+
+        <Button
+            VerticalAlignment="Bottom"
+            Foreground="White"
+            Height="40"
+            Content="OK" 
+            FontWeight="Bold"
+            FontSize="15"
+            Click="ButtonBase_OnClick" 
+        />
+    </Grid>
+</UserControl>

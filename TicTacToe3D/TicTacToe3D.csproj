@@ -66,6 +66,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Controls\InstructionControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -77,6 +81,10 @@
     <Compile Include="Controls\GameResultMessageControl.xaml.cs">
       <DependentUpon>GameResultMessageControl.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Controls\InstructionControl.xaml.cs">
+      <DependentUpon>InstructionControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Drawing\Rotation.cs" />
     <Compile Include="Drawing\Transform3DTool.cs" />
     <Compile Include="Game\Cube.cs" />
     <Compile Include="Game\Face.cs" />

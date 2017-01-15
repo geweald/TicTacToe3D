@@ -43,10 +43,11 @@ namespace TicTacToe3D.Game
         #endregion
 
         private readonly GameField[,,] _gameFields;
-        private readonly int _size;
         private readonly Transform3DTool _transform3DTool;
         private readonly Canvas _canvas;
         private readonly Game _game;
+        private readonly int _size;
+
 
         private List<GameField> _gameFieldsList;
 
@@ -168,21 +169,17 @@ namespace TicTacToe3D.Game
 
         public void DrawGameBoard()
         {
-            _transform3DTool.SetCanvasSize(_canvas.ActualWidth, _canvas.ActualHeight);
+            _transform3DTool.SetProjectionCanvasSize(_canvas.ActualWidth, _canvas.ActualHeight);
             _canvas.Children.Clear();
 
             CubesListSortZDesc();
 
             var innerCanvas = new Canvas { CacheMode = new BitmapCache() };
 
-            var watch = System.Diagnostics.Stopwatch.StartNew();
             foreach (var gfield in _gameFieldsList)
             {
                 DrawGameField(gfield, innerCanvas);
             }
-            watch.Stop();
-            var elapsedMs = watch.ElapsedTicks;
-            Console.WriteLine("DRAW TICKS: " + elapsedMs);
 
             _canvas.Children.Add(innerCanvas);
             _transform3DTool.ResetRotation();
@@ -256,14 +253,14 @@ namespace TicTacToe3D.Game
             {
                 GradientOrigin = new Point(0.75, 0.25),
                 GradientStops = new GradientStopCollection
-                            {
-                                new GradientStop(Colors.White, 0),
-                                new GradientStop(
-                                    gameField.PlayerColor.Color == Colors.White
-                                    ? Colors.LightGray
-                                    : gameField.PlayerColor.Color,
-                                    0.8)
-                            }
+                {
+                    new GradientStop(Colors.White, 0),
+                    new GradientStop(
+                        gameField.PlayerColor.Color == Colors.White
+                        ? Colors.LightGray
+                        : gameField.PlayerColor.Color,
+                        0.8)
+                }
             };
             fill.Freeze();
             var e = new Ellipse
@@ -300,7 +297,12 @@ namespace TicTacToe3D.Game
                     for (var k = 0; k < _size; k++)
                     {
                         var gf = new GameField(
-                            new[] { x + i + i * margin, y + j + j * margin, z + k + k * margin }, i, nr++);
+                            new[]
+                            {
+                                x + i + i * margin,
+                                y + j + j * margin,
+                                z + k + k * margin
+                            }, i, nr++);
                         _gameFields[i, j, k] = gf;
                         _gameFieldsList.Add(gf);
                     }
@@ -308,7 +310,10 @@ namespace TicTacToe3D.Game
 
         private void CubesListSortZDesc()
         {
-            _gameFieldsList = _gameFieldsList.OrderByDescending(gf => gf.Cube.Center.Z).ToList();
+            _gameFieldsList =
+                _gameFieldsList
+                .OrderByDescending(gf => gf.Cube.Center.Z)
+                .ToList();
         }
 
         private void ChangeHighlightedFieldLeft()

@@ -26,6 +26,7 @@ namespace TicTacToe3D.Pages
 
         private void StartPage_OnLoaded(object sender, RoutedEventArgs e)
         {
+            Instruction.Visibility = Visibility.Collapsed;
             _timer.Start();
         }
 
@@ -52,6 +53,11 @@ namespace TicTacToe3D.Pages
         private void Game5p2_OnClick(object sender, RoutedEventArgs e)
         {
             _mainWinow?.NavigateToGamePage(5, false);
+        }
+
+        private void InstructionButton_OnClick(object sender, RoutedEventArgs e)
+        {
+            Instruction.Visibility = Visibility.Visible;
         }
     }
 }

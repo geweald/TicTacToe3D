@@ -15,7 +15,8 @@ namespace TicTacToe3D.Game
         {
             _faces = new[]
             {
-                new Face(), new Face(), new Face(), new Face(), new Face(), new Face()
+                new Face(), new Face(), new Face(),
+                new Face(), new Face(), new Face()
             };
             MakeCubeVertexes(x, y, z);
             SetCubeFaces();

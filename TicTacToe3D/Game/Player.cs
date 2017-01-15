@@ -29,19 +29,13 @@ namespace TicTacToe3D.Game
             _markedFields = new List<int>();
         }
 
-        public int[] MarkedFields()
-        {
-            return _markedFields.ToArray();
-        }
+        public int[] MarkedFields() =>
+            _markedFields.ToArray();
 
-        public void MarkField(int nr)
-        {
+        public void MarkField(int nr) =>
             _markedFields.Add(nr);
-        }
 
-        public void ClearFields()
-        {
+        public void ClearFields() =>
             _markedFields.Clear();
-        }
     }
 }
