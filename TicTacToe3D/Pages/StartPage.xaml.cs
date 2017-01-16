@@ -65,5 +65,6 @@ namespace TicTacToe3D.Pages
                 _mainWinow?.NavigateToGamePage(3, withComputer);
             }
         }
+
     }
 }

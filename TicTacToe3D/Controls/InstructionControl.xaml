@@ -91,31 +91,7 @@
                 TextWrapping="Wrap" 
                 Margin="10"
                 TextAlignment="Center"
-                >
-                <Run FontWeight="Bold" Text="Keyboard"/>
-                <LineBreak/>
-                <Run Text="Use "/>
-                <Run FontWeight="Bold" Text="arrow keys "/>
-                <Run Text="to select a box and press the "/>
-                <Run FontWeight="Bold" Text="space key"/>
-                <Run Text=" to mark it. You are able to select boxes only from the highlighted layer."/>
-                <LineBreak/>
-                <Run Text="Use "/>
-                <Run FontWeight="Bold" Text="PgUp"/>
-                <Run Text=" and "/>
-                <Run FontWeight="Bold" Text="PgDn"/>
-                <Run Text=" to change game board layer."/>
-                <LineBreak/>
-                <Run Text="Use "/>
-                <Run FontWeight="Bold" Text="z, x, c, v, b, n "/>
-                <Run Text="to rotate  the camera."/>
-                <LineBreak/>
-                <Run Text="Use "/>
-                <Run FontWeight="Bold" Text="+"/>
-                <Run Text=" and "/>
-                <Run FontWeight="Bold" Text="-"/>
-                <Run Text=" to change the sale."/>
-            </TextBlock>
+                ><Run FontWeight="Bold" Text="Keyboard"/><LineBreak/><Run Text="Use "/><Run Text=" "/><Run FontWeight="Bold" Text="arrow keys "/><Run Text=" "/><Run Text="to select a box and press the "/><Run Text=" "/><Run FontWeight="Bold" Text="space key"/><Run Text=" "/><Run Text=" to mark it. You are able to select boxes only from the highlighted layer."/><LineBreak/><Run Text="Use "/><Run Text=" "/><Run FontWeight="Bold" Text="PgUp"/><Run Text=" "/><Run Text=" and "/><Run Text=" "/><Run FontWeight="Bold" Text="PgDn"/><Run Text=" "/><Run Text=" to change the game board layer."/><LineBreak/><Run Text="Use "/><Run Text=" "/><Run FontWeight="Bold" Text="z, x, c, v, b, n "/><Run Text=" "/><Run Text="to rotate  the camera."/><LineBreak/><Run Text="Use "/><Run Text=" "/><Run FontWeight="Bold" Text="+"/><Run Text=" "/><Run Text=" and "/><Run Text=" "/><Run FontWeight="Bold" Text="-"/><Run Text=" "/><Run Text=" to change the sale."/></TextBlock>
         </StackPanel>
 
         <Button
