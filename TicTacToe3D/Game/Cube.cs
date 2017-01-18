@@ -3,7 +3,7 @@ using System.Windows.Media.Media3D;
 
 namespace TicTacToe3D.Game
 {
-    class Cube
+    internal class Cube
     {
         private Point3D[] _vertexes;
         private readonly Face[] _faces;

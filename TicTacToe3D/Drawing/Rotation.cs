@@ -3,7 +3,7 @@ using System.Windows.Media.Media3D;
 
 namespace TicTacToe3D.Drawing
 {
-    class Rotation
+    internal class Rotation
     {
         public Matrix3D Matrix { get; private set; }
 

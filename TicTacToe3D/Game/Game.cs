@@ -6,13 +6,14 @@ using TicTacToe3D.Pages;
 
 namespace TicTacToe3D.Game
 {
-    enum GameState
+    internal enum GameState
     {
         Running, Win, Draw
     }
 
-    class Game
+    internal class Game
     {
+        private readonly GamePage.MakeMoveUpdateDelegate _moveUpdateDelegate;
         private readonly List<Player> _players;
         private readonly int _fields;
         private readonly int _size;
@@ -20,7 +21,6 @@ namespace TicTacToe3D.Game
 
         public GameState GameState { get; private set; }
         public GameBoard GameBoard { get; }
-        private readonly GamePage.MakeMoveUpdateDelegate _moveUpdateDelegate;
 
         public Game(ushort size, Canvas canvas, GamePage.MakeMoveUpdateDelegate moveUpdate)
         {

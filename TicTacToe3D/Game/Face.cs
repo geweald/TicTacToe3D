@@ -2,7 +2,7 @@
 
 namespace TicTacToe3D.Game
 {
-    class Face
+    internal class Face
     {
         private Point3D[] _points;
         private Point3D _center;

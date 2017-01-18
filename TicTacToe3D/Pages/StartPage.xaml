@@ -171,7 +171,7 @@
             Grid.ColumnSpan="2" 
             Grid.Column="0"
             BorderThickness="3"
-            BorderBrush="White" Loaded="Instruction_Loaded"
+            BorderBrush="White"
             />
     </Grid>
 </Page>

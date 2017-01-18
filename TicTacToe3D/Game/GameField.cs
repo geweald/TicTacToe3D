@@ -2,7 +2,7 @@
 
 namespace TicTacToe3D.Game
 {
-    class GameField
+    internal class GameField
     {
         public Cube Cube { get; }
         public int Layer { get; }
